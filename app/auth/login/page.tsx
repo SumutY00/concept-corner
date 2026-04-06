@@ -11,6 +11,7 @@ export default function LoginPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
+
   const router = useRouter()
   const supabase = createClient()
 
@@ -38,12 +39,14 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setGoogleLoading(true)
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
+
     if (error) {
       setMessage('Google ile giriş başarısız: ' + error.message)
       setIsSuccess(false)
@@ -54,7 +57,11 @@ export default function LoginPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+          box-sizing: border-box;
+        }
 
         .login-page {
           min-height: 100vh;
@@ -62,10 +69,10 @@ export default function LoginPage() {
           font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* Sol panel — dekoratif */
+        /* Sol panel */
         .login-left {
           flex: 1;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          background: linear-gradient(135deg, #7b52b3 0%, #6f6fe8 100%);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -78,19 +85,23 @@ export default function LoginPage() {
         .login-left::before {
           content: '';
           position: absolute;
-          top: -100px; right: -100px;
-          width: 400px; height: 400px;
+          top: -120px;
+          right: -120px;
+          width: 360px;
+          height: 360px;
           border-radius: 50%;
-          background: rgba(255,255,255,0.08);
+          background: rgba(255, 255, 255, 0.08);
         }
 
         .login-left::after {
           content: '';
           position: absolute;
-          bottom: -60px; left: -60px;
-          width: 300px; height: 300px;
+          bottom: -140px;
+          left: -140px;
+          width: 360px;
+          height: 360px;
           border-radius: 50%;
-          background: rgba(255,255,255,0.05);
+          background: rgba(255, 255, 255, 0.07);
         }
 
         .login-left-content {
@@ -98,52 +109,78 @@ export default function LoginPage() {
           z-index: 1;
           text-align: center;
           color: #fff;
-          max-width: 360px;
+          width: 100%;
+          max-width: 560px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
         .login-left-logo {
-          width: 64px; height: 64px;
-          background: rgba(255,255,255,0.15);
-          border-radius: 16px;
-          display: flex; align-items: center; justify-content: center;
-          margin: 0 auto 1.5rem;
-          backdrop-filter: blur(10px);
-        }
-
-        .login-left h2 {
-          font-size: 28px;
-          font-weight: 700;
-          margin-bottom: 0.8rem;
-          line-height: 1.3;
-        }
-
-        .login-left p {
-          font-size: 15px;
-          font-weight: 300;
-          opacity: 0.85;
-          line-height: 1.6;
-        }
-
-        .login-dots {
+          width: min(420px, 92%);
+          margin: 0 auto 2rem;
           display: flex;
-          gap: 8px;
-          margin-top: 2rem;
+          align-items: center;
           justify-content: center;
         }
 
-        .login-dot {
-          width: 8px; height: 8px;
-          border-radius: 50%;
-          background: rgba(255,255,255,0.3);
+        .login-left-logo img {
+          width: 100%;
+          height: auto;
+          display: block;
+          object-fit: contain;
+          filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.16));
         }
 
-        .login-dot.active {
-          background: #fff;
-          width: 24px;
-          border-radius: 4px;
+        .login-left h2 {
+          font-size: 42px;
+          font-weight: 800;
+          margin: 0 0 1rem;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
         }
 
-        /* Sağ panel — form */
+        .login-left p {
+          font-size: 18px;
+          font-weight: 400;
+          opacity: 0.92;
+          line-height: 1.7;
+          margin: 0 0 2rem;
+          max-width: 520px;
+        }
+
+        .login-feature-list {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+          align-items: flex-start;
+          text-align: left;
+          width: fit-content;
+        }
+
+        .login-feature-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: rgba(255, 255, 255, 0.96);
+          font-size: 18px;
+          font-weight: 500;
+        }
+
+        .login-feature-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.14);
+          backdrop-filter: blur(10px);
+          flex-shrink: 0;
+          font-size: 16px;
+        }
+
+        /* Sağ panel */
         .login-right {
           flex: 1;
           background: #fafbfc;
@@ -172,7 +209,6 @@ export default function LoginPage() {
           margin-bottom: 2rem;
         }
 
-        /* Google butonu */
         .login-google-btn {
           width: 100%;
           display: flex;
@@ -194,7 +230,7 @@ export default function LoginPage() {
         .login-google-btn:hover:not(:disabled) {
           background: #f8f9fa;
           border-color: #d0d5dd;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
         .login-google-btn:disabled {
@@ -202,7 +238,6 @@ export default function LoginPage() {
           cursor: not-allowed;
         }
 
-        /* Ayırıcı */
         .login-divider {
           display: flex;
           align-items: center;
@@ -224,7 +259,6 @@ export default function LoginPage() {
           letter-spacing: 0.05em;
         }
 
-        /* Form alanları */
         .login-field {
           margin-bottom: 1rem;
         }
@@ -239,7 +273,6 @@ export default function LoginPage() {
 
         .login-input {
           width: 100%;
-          box-sizing: border-box;
           padding: 12px 14px;
           background: #fff;
           border: 1.5px solid #e2e4e9;
@@ -257,10 +290,9 @@ export default function LoginPage() {
 
         .login-input:focus {
           border-color: #667eea;
-          box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
         }
 
-        /* Giriş butonu */
         .login-submit {
           width: 100%;
           padding: 12px;
@@ -289,7 +321,6 @@ export default function LoginPage() {
           cursor: not-allowed;
         }
 
-        /* Mesajlar */
         .login-msg-success {
           padding: 10px 14px;
           border-radius: 10px;
@@ -310,7 +341,6 @@ export default function LoginPage() {
           margin-bottom: 1rem;
         }
 
-        /* Footer */
         .login-footer {
           text-align: center;
           margin-top: 1.8rem;
@@ -347,60 +377,114 @@ export default function LoginPage() {
           color: #667eea;
         }
 
-        /* Responsive */
+        @media (max-width: 1024px) {
+          .login-left h2 {
+            font-size: 34px;
+          }
+
+          .login-left p {
+            font-size: 16px;
+          }
+
+          .login-feature-item {
+            font-size: 16px;
+          }
+
+          .login-left-logo {
+            width: min(360px, 92%);
+          }
+        }
+
         @media (max-width: 768px) {
-          .login-page { flex-direction: column; }
-          .login-left { display: none; }
-          .login-right { padding: 2rem 1.5rem; min-height: 100vh; }
+          .login-page {
+            flex-direction: column;
+          }
+
+          .login-left {
+            display: none;
+          }
+
+          .login-right {
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+          }
         }
       `}</style>
 
       <div className="login-page">
-        {/* Sol dekoratif panel */}
         <div className="login-left">
           <div className="login-left-content">
             <div className="login-left-logo">
-              <img src="/logo.png" alt="Concept Corner" style={{ height: 56, width: 'auto' }} />
+              <img src="/concept-corner-logo.png" alt="Concept Corner" />
             </div>
-            <h2>Yaratıcılığını<br/>keşfet ve paylaş</h2>
-            <p>Konseptlerini oluştur, ilham al ve yaratıcı topluluğun bir parçası ol.</p>
-            <div className="login-dots">
-              <div className="login-dot active" />
-              <div className="login-dot" />
-              <div className="login-dot" />
+
+            <h2>
+              Yaratıcı topluluğa
+              <br />
+              katıl
+            </h2>
+
+            <p>
+              Binlerce yaratıcıyla birlikte konseptlerini paylaş ve ilham al.
+            </p>
+
+            <div className="login-feature-list">
+              <div className="login-feature-item">
+                <div className="login-feature-icon">🎨</div>
+                <span>Konseptlerini oluştur ve paylaş</span>
+              </div>
+
+              <div className="login-feature-item">
+                <div className="login-feature-icon">🏆</div>
+                <span>Rozetler kazan, skor tablosunda yüksel</span>
+              </div>
+
+              <div className="login-feature-item">
+                <div className="login-feature-icon">💬</div>
+                <span>Yaratıcılarla etkileşime geç</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Sağ form paneli */}
         <div className="login-right">
           <div className="login-card">
             <h1 className="login-welcome">Tekrar hoş geldin 👋</h1>
             <p className="login-subtitle">Hesabına giriş yap ve keşfetmeye devam et</p>
 
-            {/* Google ile giriş */}
             <button
               className="login-google-btn"
               onClick={handleGoogleLogin}
               disabled={googleLoading}
+              type="button"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
-                <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                <path
+                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+                  fill="#EA4335"
+                />
               </svg>
               {googleLoading ? 'Yönlendiriliyorsunuz...' : 'Google ile devam et'}
             </button>
 
-            {/* Ayırıcı */}
             <div className="login-divider">
               <div className="login-divider-line" />
               <span className="login-divider-text">veya e-posta ile</span>
               <div className="login-divider-line" />
             </div>
 
-            {/* Email/Şifre formu */}
             <form onSubmit={handleLogin}>
               <div className="login-field">
                 <label className="login-label">E-posta</label>
@@ -437,13 +521,16 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {/* Footer */}
             <div className="login-footer">
               <p className="login-footer-text">
                 Hesabın yok mu?{' '}
-                <a href="/auth/signup" className="login-footer-link">Kayıt ol</a>
+                <a href="/auth/signup" className="login-footer-link">
+                  Kayıt ol
+                </a>
               </p>
-              <a href="/" className="login-back">← Ana sayfaya dön</a>
+              <a href="/" className="login-back">
+                ← Ana sayfaya dön
+              </a>
             </div>
           </div>
         </div>
