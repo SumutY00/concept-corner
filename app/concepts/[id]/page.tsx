@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/ssr'
+﻿import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { notFound } from 'next/navigation'
 
@@ -86,8 +86,8 @@ export default async function ConceptPage({ params }: { params: Promise<{ id: st
         .cc-logo-text { font-family: var(--cc-font-heading); font-size: 18px; color: var(--cc-text-primary); font-weight: 700; }
         .cc-back { font-size: 13px; color: var(--cc-text-muted); text-decoration: none; transition: color 0.2s; }
         .cc-back:hover { color: var(--cc-text-primary); }
-        .cc-nav-btn { font-size: 13px; font-weight: 500; color: #fff; background: var(--cc-primary); text-decoration: none; padding: 7px 18px; border-radius: var(--cc-radius-sm); transition: background 0.2s; }
-        .cc-nav-btn:hover { background: var(--cc-primary-hover); }
+        .cc-nav-btn { font-size: 13px; font-weight: 600; color: #fff; background: var(--cc-gradient); text-decoration: none; padding: 8px 20px; border-radius: var(--cc-radius-sm); transition: opacity 0.2s; }
+        .cc-nav-btn:hover { opacity: 0.88; }
 
         /* HERO */
         .cc-hero {
@@ -285,13 +285,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ id: st
       <div className="cc-page">
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="8" fill="var(--cc-surface-alt)"/>
-              <circle cx="14" cy="14" r="5" fill="var(--cc-primary)"/>
-              <circle cx="24" cy="12" r="3.5" fill="var(--cc-accent)"/>
-              <circle cx="22" cy="23" r="4" fill="var(--cc-like)"/>
-              <circle cx="13" cy="23" r="2.5" fill="var(--cc-success)"/>
-            </svg>
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
@@ -272,15 +272,15 @@ export default function EditProfilePage() {
 
         .cc-btn {
           width: 100%; padding: 14px;
-          background: #c8865c; border: none; border-radius: 8px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 15px; font-weight: 500; color: #1a120a;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 10px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 15px; font-weight: 600; color: #fff;
           cursor: pointer; letter-spacing: 0.02em;
-          transition: background 0.2s, opacity 0.2s;
+          transition: opacity 0.2s;
           margin-top: 0.5rem;
         }
 
-        .cc-btn:hover:not(:disabled) { background: #d99a72; }
+        .cc-btn:hover:not(:disabled) { opacity: 0.88; }
         .cc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .cc-msg-success {
@@ -326,13 +326,7 @@ export default function EditProfilePage() {
 
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="8" fill="rgba(200,134,92,0.15)"/>
-              <circle cx="14" cy="14" r="5" fill="#c8865c"/>
-              <circle cx="24" cy="12" r="3.5" fill="#a06090"/>
-              <circle cx="22" cy="23" r="4" fill="#6090b0"/>
-              <circle cx="13" cy="23" r="2.5" fill="#80a050"/>
-            </svg>
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <a href={`/profile/${username}`} className="cc-back">← Profile dön</a>

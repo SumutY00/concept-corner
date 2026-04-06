@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
@@ -259,13 +259,7 @@ export default function NotificationsPage() {
       <div className="cc-page">
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="8" fill="var(--cc-surface-alt)"/>
-              <circle cx="14" cy="14" r="5" fill="var(--cc-primary)"/>
-              <circle cx="24" cy="12" r="3.5" fill="var(--cc-accent)"/>
-              <circle cx="22" cy="23" r="4" fill="var(--cc-like)"/>
-              <circle cx="13" cy="23" r="2.5" fill="var(--cc-success)"/>
-            </svg>
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <a href="/" className="cc-back">← Akışa dön</a>

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
@@ -263,22 +263,22 @@ export default function AdminPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .cc-page { min-height: 100vh; background: #0e0c0a; font-family: 'DM Sans', sans-serif; color: #f0ebe3; }
-        .cc-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(14,12,10,0.9); position: sticky; top: 0; z-index: 100; }
+        .cc-page { min-height: 100vh; background: var(--cc-bg); font-family: 'Plus Jakarta Sans', sans-serif; color: var(--cc-text-primary); }
+        .cc-nav { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; border-bottom: 1px solid var(--cc-border); background: var(--cc-navbar); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; }
         .cc-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .cc-logo-text { font-family: 'Playfair Display', serif; font-size: 18px; color: #f0ebe3; }
-        .cc-back { font-size: 13px; color: #6a6050; text-decoration: none; transition: color 0.2s; }
-        .cc-back:hover { color: #f0ebe3; }
+        .cc-logo-text { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 18px; font-weight: 700; color: var(--cc-text-primary); }
+        .cc-back { font-size: 13px; color: var(--cc-text-muted); text-decoration: none; transition: color 0.2s; }
+        .cc-back:hover { color: var(--cc-text-primary); }
         .cc-container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
         .cc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
-        .cc-title { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: #f0ebe3; }
-        .cc-title em { font-style: italic; color: #c8865c; }
+        .cc-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 32px; font-weight: 700; color: var(--cc-text-primary); }
+        .cc-title em { font-style: italic; color: var(--cc-primary); }
 
-        .cc-btn-primary { padding: 10px 22px; background: #c8865c; border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: #1a120a; cursor: pointer; transition: background 0.2s; }
-        .cc-btn-primary:hover { background: #d99a72; }
+        .cc-btn-primary { padding: 10px 22px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 10px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: #fff; cursor: pointer; transition: opacity 0.2s; }
+        .cc-btn-primary:hover { opacity: 0.88; }
         .cc-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .cc-form-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(200,134,92,0.2); border-radius: 12px; padding: 1.8rem; margin-bottom: 2rem; }
@@ -376,13 +376,7 @@ export default function AdminPage() {
       <div className="cc-page">
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="8" fill="rgba(200,134,92,0.15)"/>
-              <circle cx="14" cy="14" r="5" fill="#c8865c"/>
-              <circle cx="24" cy="12" r="3.5" fill="#a06090"/>
-              <circle cx="22" cy="23" r="4" fill="#6090b0"/>
-              <circle cx="13" cy="23" r="2.5" fill="#80a050"/>
-            </svg>
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <a href="/" className="cc-back">← Ana sayfaya dön</a>

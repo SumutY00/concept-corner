@@ -1,4 +1,4 @@
-import { createServerClient } from '@supabase/ssr'
+﻿import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import ThemeSwitcher from './components/ThemeSwitcher'
 import NotifBell from './components/NotifBell'
@@ -129,8 +129,8 @@ export default async function Home() {
         .cc-nav-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--cc-surface-alt); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: var(--cc-primary); text-decoration: none; overflow: hidden; border: 1px solid var(--cc-border); transition: border-color 0.2s; }
         .cc-nav-avatar:hover { border-color: var(--cc-primary); }
         .cc-nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .cc-nav-btn { font-size: 13px; font-weight: 500; color: #fff; background: var(--cc-primary); text-decoration: none; padding: 7px 18px; border-radius: var(--cc-radius-sm); transition: background 0.2s; }
-        .cc-nav-btn:hover { background: var(--cc-primary-hover); }
+        .cc-nav-btn { font-size: 13px; font-weight: 600; color: #fff; background: var(--cc-gradient); text-decoration: none; padding: 8px 20px; border-radius: var(--cc-radius-sm); transition: opacity 0.2s; }
+        .cc-nav-btn:hover { opacity: 0.88; }
         .cc-nav-link { font-size: 13px; color: var(--cc-text-muted); text-decoration: none; padding: 7px 14px; border-radius: var(--cc-radius-sm); transition: color 0.2s; display: flex; align-items: center; }
         .cc-nav-link:hover { color: var(--cc-text-primary); }
 
@@ -145,8 +145,8 @@ export default async function Home() {
         .cc-concept-timer { text-align: center; flex-shrink: 0; }
         .cc-timer-num { font-family: var(--cc-font-heading); font-size: 52px; font-weight: 700; color: var(--cc-text-primary); line-height: 1; }
         .cc-timer-label { font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
-        .cc-concept-join { display: inline-flex; align-items: center; gap: 6px; margin-top: 1.2rem; padding: 10px 22px; background: var(--cc-primary); color: #fff; border-radius: var(--cc-radius-sm); font-size: 14px; font-weight: 500; text-decoration: none; transition: background 0.2s; }
-        .cc-concept-join:hover { background: var(--cc-primary-hover); }
+        .cc-concept-join { display: inline-flex; align-items: center; gap: 6px; margin-top: 1.2rem; padding: 10px 22px; background: var(--cc-gradient); color: #fff; border-radius: var(--cc-radius-sm); font-size: 14px; font-weight: 600; text-decoration: none; transition: opacity 0.2s; }
+        .cc-concept-join:hover { opacity: 0.88; }
         .cc-concept-posts { margin-top: 1.5rem; }
         .cc-concept-posts-title { font-size: 11px; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.8rem; }
         .cc-concept-posts-grid { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
@@ -182,8 +182,8 @@ export default async function Home() {
         .cc-cta-title { font-family: var(--cc-font-heading); font-size: 18px; font-weight: 700; color: var(--cc-text-primary); margin-bottom: 6px; }
         .cc-cta-title em { font-style: italic; color: var(--cc-primary); }
         .cc-cta-sub { font-size: 13px; color: var(--cc-text-secondary); font-weight: 300; line-height: 1.6; margin-bottom: 1.2rem; }
-        .cc-cta-btn { display: block; padding: 10px 20px; background: var(--cc-primary); color: #fff; border-radius: var(--cc-radius-sm); font-size: 14px; font-weight: 500; text-decoration: none; transition: background 0.2s; }
-        .cc-cta-btn:hover { background: var(--cc-primary-hover); }
+        .cc-cta-btn { display: block; padding: 10px 20px; background: var(--cc-gradient); color: #fff; border-radius: var(--cc-radius-sm); font-size: 14px; font-weight: 600; text-decoration: none; transition: opacity 0.2s; }
+        .cc-cta-btn:hover { opacity: 0.88; }
         .cc-cta-login { display: block; margin-top: 8px; font-size: 12px; color: var(--cc-text-muted); text-decoration: none; transition: color 0.2s; }
         .cc-cta-login:hover { color: var(--cc-primary); }
         .cc-empty { grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; }
@@ -200,13 +200,7 @@ export default async function Home() {
       <div className="cc-root">
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="8" fill="var(--cc-surface-alt)"/>
-              <circle cx="14" cy="14" r="5" fill="var(--cc-primary)"/>
-              <circle cx="24" cy="12" r="3.5" fill="var(--cc-accent)"/>
-              <circle cx="22" cy="23" r="4" fill="var(--cc-like)"/>
-              <circle cx="13" cy="23" r="2.5" fill="var(--cc-success)"/>
-            </svg>
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <div className="cc-nav-right">

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase'
@@ -360,12 +360,7 @@ export default function LoginPage() {
         <div className="login-left">
           <div className="login-left-content">
             <div className="login-left-logo">
-              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                <circle cx="14" cy="14" r="5" fill="rgba(255,255,255,0.9)"/>
-                <circle cx="24" cy="12" r="3.5" fill="rgba(255,255,255,0.6)"/>
-                <circle cx="22" cy="23" r="4" fill="rgba(255,255,255,0.7)"/>
-                <circle cx="13" cy="23" r="2.5" fill="rgba(255,255,255,0.5)"/>
-              </svg>
+              <img src="/logo.png" alt="Concept Corner" style={{ height: 48, width: 'auto' }} />
             </div>
             <h2>Yaratıcılığını<br/>keşfet ve paylaş</h2>
             <p>Konseptlerini oluştur, ilham al ve yaratıcı topluluğun bir parçası ol.</p>
