@@ -12,6 +12,7 @@ export default function SignupPage() {
   const [googleLoading, setGoogleLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
+
   const router = useRouter()
   const supabase = createClient()
 
@@ -55,6 +56,7 @@ export default function SignupPage() {
 
     setIsSuccess(true)
     setMessage('Kayıt başarılı! Giriş sayfasına yönlendiriliyorsunuz...')
+
     setTimeout(() => {
       router.push('/auth/login')
     }, 2000)
@@ -62,12 +64,14 @@ export default function SignupPage() {
 
   const handleGoogleSignup = async () => {
     setGoogleLoading(true)
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
+
     if (error) {
       setMessage('Google ile kayıt başarısız: ' + error.message)
       setIsSuccess(false)
@@ -78,7 +82,11 @@ export default function SignupPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+          box-sizing: border-box;
+        }
 
         .signup-page {
           min-height: 100vh;
@@ -89,7 +97,7 @@ export default function SignupPage() {
         /* Sol panel */
         .signup-left {
           flex: 1;
-          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+          background: linear-gradient(135deg, #7b52b3 0%, #6f6fe8 100%);
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -102,19 +110,23 @@ export default function SignupPage() {
         .signup-left::before {
           content: '';
           position: absolute;
-          bottom: -100px; left: -100px;
-          width: 400px; height: 400px;
+          top: -120px;
+          right: -120px;
+          width: 360px;
+          height: 360px;
           border-radius: 50%;
-          background: rgba(255,255,255,0.08);
+          background: rgba(255, 255, 255, 0.08);
         }
 
         .signup-left::after {
           content: '';
           position: absolute;
-          top: -60px; right: -60px;
-          width: 300px; height: 300px;
+          bottom: -140px;
+          left: -140px;
+          width: 360px;
+          height: 360px;
           border-radius: 50%;
-          background: rgba(255,255,255,0.05);
+          background: rgba(255, 255, 255, 0.07);
         }
 
         .signup-left-content {
@@ -122,56 +134,75 @@ export default function SignupPage() {
           z-index: 1;
           text-align: center;
           color: #fff;
-          max-width: 360px;
+          width: 100%;
+          max-width: 560px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         }
 
         .signup-left-logo {
-          width: 64px; height: 64px;
-          background: rgba(255,255,255,0.15);
-          border-radius: 16px;
-          display: flex; align-items: center; justify-content: center;
-          margin: 0 auto 1.5rem;
-          backdrop-filter: blur(10px);
+          width: min(420px, 92%);
+          margin: 0 auto 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .signup-left-logo img {
+          width: 100%;
+          height: auto;
+          display: block;
+          object-fit: contain;
+          filter: drop-shadow(0 16px 34px rgba(0, 0, 0, 0.16));
         }
 
         .signup-left h2 {
-          font-size: 28px;
-          font-weight: 700;
-          margin-bottom: 0.8rem;
-          line-height: 1.3;
+          font-size: 42px;
+          font-weight: 800;
+          margin: 0 0 1rem;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
         }
 
         .signup-left p {
-          font-size: 15px;
-          font-weight: 300;
-          opacity: 0.85;
-          line-height: 1.6;
+          font-size: 18px;
+          font-weight: 400;
+          opacity: 0.92;
+          line-height: 1.7;
+          margin: 0 0 2rem;
+          max-width: 520px;
         }
 
-        .signup-features {
+        .signup-feature-list {
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          margin-top: 2rem;
+          gap: 14px;
+          align-items: flex-start;
           text-align: left;
+          width: fit-content;
         }
 
-        .signup-feature {
+        .signup-feature-item {
           display: flex;
           align-items: center;
-          gap: 10px;
-          font-size: 14px;
-          font-weight: 400;
-          opacity: 0.9;
+          gap: 12px;
+          color: rgba(255, 255, 255, 0.96);
+          font-size: 18px;
+          font-weight: 500;
         }
 
         .signup-feature-icon {
-          width: 28px; height: 28px;
-          background: rgba(255,255,255,0.15);
-          border-radius: 8px;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 14px;
+          width: 36px;
+          height: 36px;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.14);
+          backdrop-filter: blur(10px);
           flex-shrink: 0;
+          font-size: 16px;
         }
 
         /* Sağ panel */
@@ -224,7 +255,7 @@ export default function SignupPage() {
         .signup-google-btn:hover:not(:disabled) {
           background: #f8f9fa;
           border-color: #d0d5dd;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
 
         .signup-google-btn:disabled {
@@ -267,7 +298,6 @@ export default function SignupPage() {
 
         .signup-input {
           width: 100%;
-          box-sizing: border-box;
           padding: 12px 14px;
           background: #fff;
           border: 1.5px solid #e2e4e9;
@@ -284,8 +314,8 @@ export default function SignupPage() {
         }
 
         .signup-input:focus {
-          border-color: #764ba2;
-          box-shadow: 0 0 0 3px rgba(118,75,162,0.12);
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
         }
 
         .signup-hint {
@@ -297,7 +327,7 @@ export default function SignupPage() {
         .signup-submit {
           width: 100%;
           padding: 12px;
-          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           border: none;
           border-radius: 10px;
           font-family: 'Plus Jakarta Sans', sans-serif;
@@ -353,14 +383,14 @@ export default function SignupPage() {
         }
 
         .signup-footer-link {
-          color: #764ba2;
+          color: #667eea;
           text-decoration: none;
           font-weight: 600;
           transition: color 0.2s;
         }
 
         .signup-footer-link:hover {
-          color: #667eea;
+          color: #764ba2;
         }
 
         .signup-back {
@@ -375,36 +405,72 @@ export default function SignupPage() {
         }
 
         .signup-back:hover {
-          color: #764ba2;
+          color: #667eea;
+        }
+
+        @media (max-width: 1024px) {
+          .signup-left h2 {
+            font-size: 34px;
+          }
+
+          .signup-left p {
+            font-size: 16px;
+          }
+
+          .signup-feature-item {
+            font-size: 16px;
+          }
+
+          .signup-left-logo {
+            width: min(360px, 92%);
+          }
         }
 
         @media (max-width: 768px) {
-          .signup-page { flex-direction: column; }
-          .signup-left { display: none; }
-          .signup-right { padding: 2rem 1.5rem; min-height: 100vh; }
+          .signup-page {
+            flex-direction: column;
+          }
+
+          .signup-left {
+            display: none;
+          }
+
+          .signup-right {
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+          }
         }
       `}</style>
 
       <div className="signup-page">
-        {/* Sol dekoratif panel */}
         <div className="signup-left">
           <div className="signup-left-content">
             <div className="signup-left-logo">
-              <img src="/logo.png" alt="Concept Corner" style={{ height: 120, width: 'auto', borderRadius: 24, filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.2))' }} />
+              <img src="/logo.png" alt="Concept Corner" />
             </div>
-            <h2>Yaratıcı topluluğa<br/>katıl</h2>
-            <p>Binlerce yaratıcıyla birlikte konseptlerini paylaş ve ilham al.</p>
 
-            <div className="signup-features">
-              <div className="signup-feature">
+            <h2>
+              Yaratıcı topluluğa
+              <br />
+              katıl
+            </h2>
+
+            <p>
+              Binlerce yaratıcıyla birlikte konseptlerini paylaş ve ilham al.
+            </p>
+
+            <div className="signup-feature-list">
+              <div className="signup-feature-item">
                 <div className="signup-feature-icon">🎨</div>
                 <span>Konseptlerini oluştur ve paylaş</span>
               </div>
-              <div className="signup-feature">
+
+              <div className="signup-feature-item">
                 <div className="signup-feature-icon">🏆</div>
                 <span>Rozetler kazan, skor tablosunda yüksel</span>
               </div>
-              <div className="signup-feature">
+
+              <div className="signup-feature-item">
                 <div className="signup-feature-icon">💬</div>
                 <span>Yaratıcılarla etkileşime geç</span>
               </div>
@@ -412,35 +478,44 @@ export default function SignupPage() {
           </div>
         </div>
 
-        {/* Sağ form paneli */}
         <div className="signup-right">
           <div className="signup-card">
             <h1 className="signup-welcome">Hesap oluştur ✨</h1>
             <p className="signup-subtitle">Hemen ücretsiz kayıt ol ve keşfetmeye başla</p>
 
-            {/* Google ile kayıt */}
             <button
               className="signup-google-btn"
               onClick={handleGoogleSignup}
               disabled={googleLoading}
+              type="button"
             >
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-                <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
-                <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+                <path
+                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+                  fill="#EA4335"
+                />
               </svg>
               {googleLoading ? 'Yönlendiriliyorsunuz...' : 'Google ile devam et'}
             </button>
 
-            {/* Ayırıcı */}
             <div className="signup-divider">
               <div className="signup-divider-line" />
               <span className="signup-divider-text">veya e-posta ile</span>
               <div className="signup-divider-line" />
             </div>
 
-            {/* Form */}
             <form onSubmit={handleSignup}>
               <div className="signup-field">
                 <label className="signup-label">Kullanıcı Adı</label>
@@ -491,13 +566,16 @@ export default function SignupPage() {
               </button>
             </form>
 
-            {/* Footer */}
             <div className="signup-footer">
               <p className="signup-footer-text">
                 Zaten hesabın var mı?{' '}
-                <a href="/auth/login" className="signup-footer-link">Giriş yap</a>
+                <a href="/auth/login" className="signup-footer-link">
+                  Giriş yap
+                </a>
               </p>
-              <a href="/" className="signup-back">← Ana sayfaya dön</a>
+              <a href="/" className="signup-back">
+                ← Ana sayfaya dön
+              </a>
             </div>
           </div>
         </div>
