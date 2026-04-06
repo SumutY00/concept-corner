@@ -1,11 +1,11 @@
 {
   "name": "Concept Corner",
   "short_name": "ConceptCorner",
-  "description": "Tematik sosyal medya platformu",
+  "description": "Konseptlerini paylaş, ilham al, yaratıcıları takip et.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0e0c0a",
-  "theme_color": "#4F7CFF",
+  "background_color": "#0B1020",
+  "theme_color": "#667eea",
   "orientation": "portrait",
   "icons": [
     {
