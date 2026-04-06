@@ -142,7 +142,7 @@ export default function SignupPage() {
         }
 
         .signup-left-logo {
-          width: min(420px, 92%);
+          width: min(480px, 95%);
           margin: 0 auto 2rem;
           display: flex;
           align-items: center;
