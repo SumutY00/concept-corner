@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import ThemeSwitcher from './components/ThemeSwitcher'
 import NotifBell from './components/NotifBell'
 import MsgBell from './components/MsgBell'
+import { redirect } from 'next/navigation'
 
 async function getHomeData() {
   const cookieStore = await cookies()
@@ -13,6 +14,7 @@ async function getHomeData() {
   )
 
   const { data: { user } } = await supabase.auth.getUser()
+  if (!user) { redirect('/auth/signup') }
 
   const { data: activeConcept } = await supabase
     .from('concepts')

@@ -390,7 +390,7 @@ export default function SignupPage() {
         <div className="signup-left">
           <div className="signup-left-content">
             <div className="signup-left-logo">
-              <img src="/logo.png" alt="Concept Corner" style={{ height: 56, width: 'auto' }} />
+              <img src="/logo.png" alt="Concept Corner" style={{ height: 120, width: 'auto', borderRadius: 24, filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.2))' }} />
             </div>
             <h2>Yaratıcı topluluğa<br/>katıl</h2>
             <p>Binlerce yaratıcıyla birlikte konseptlerini paylaş ve ilham al.</p>
