@@ -432,11 +432,35 @@ export default function SignupPage() {
           }
 
           .signup-left {
-            display: none;
+            display: flex;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+          }
+
+          .signup-left h2 {
+            font-size: 28px;
+          }
+
+          .signup-left p {
+            font-size: 15px;
+          }
+
+          .signup-left-logo {
+            width: min(280px, 80%);
+          }
+
+          .signup-feature-item {
+            font-size: 14px;
+          }
+
+          .signup-feature-icon {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
           }
 
           .signup-right {
-            padding: 2rem 1.5rem;
+            padding: 2.5rem 1.5rem;
             min-height: 100vh;
           }
         }
