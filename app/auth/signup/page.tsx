@@ -9,6 +9,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
   const router = useRouter()
@@ -59,308 +60,450 @@ export default function SignupPage() {
     }, 2000)
   }
 
+  const handleGoogleSignup = async () => {
+    setGoogleLoading(true)
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+    if (error) {
+      setMessage('Google ile kayıt başarısız: ' + error.message)
+      setIsSuccess(false)
+      setGoogleLoading(false)
+    }
+  }
+
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
-        .cc-page {
+        .signup-page {
           min-height: 100vh;
-          background: #0e0c0a;
           display: flex;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Sol panel */
+        .signup-left {
+          flex: 1;
+          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+          display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
-          padding: 3rem 1rem;
-          font-family: 'DM Sans', sans-serif;
+          padding: 3rem;
           position: relative;
           overflow: hidden;
         }
 
-        .cc-page::before {
+        .signup-left::before {
           content: '';
           position: absolute;
-          top: -120px; left: -120px;
-          width: 480px; height: 480px;
+          bottom: -100px; left: -100px;
+          width: 400px; height: 400px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(210,130,70,0.12) 0%, transparent 70%);
-          pointer-events: none;
+          background: rgba(255,255,255,0.08);
         }
 
-        .cc-page::after {
+        .signup-left::after {
           content: '';
           position: absolute;
-          bottom: -80px; right: -80px;
-          width: 320px; height: 320px;
+          top: -60px; right: -60px;
+          width: 300px; height: 300px;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(140,100,200,0.10) 0%, transparent 70%);
-          pointer-events: none;
+          background: rgba(255,255,255,0.05);
         }
 
-        .cc-card {
-          width: 100%;
-          max-width: 420px;
+        .signup-left-content {
           position: relative;
           z-index: 1;
+          text-align: center;
+          color: #fff;
+          max-width: 360px;
         }
 
-        .cc-logo {
+        .signup-left-logo {
+          width: 64px; height: 64px;
+          background: rgba(255,255,255,0.15);
+          border-radius: 16px;
+          display: flex; align-items: center; justify-content: center;
+          margin: 0 auto 1.5rem;
+          backdrop-filter: blur(10px);
+        }
+
+        .signup-left h2 {
+          font-size: 28px;
+          font-weight: 700;
+          margin-bottom: 0.8rem;
+          line-height: 1.3;
+        }
+
+        .signup-left p {
+          font-size: 15px;
+          font-weight: 300;
+          opacity: 0.85;
+          line-height: 1.6;
+        }
+
+        .signup-features {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+          margin-top: 2rem;
+          text-align: left;
+        }
+
+        .signup-feature {
           display: flex;
           align-items: center;
           gap: 10px;
-          margin-bottom: 2rem;
-          text-decoration: none;
-        }
-
-        .cc-logo-text {
-          font-family: 'Playfair Display', serif;
-          font-size: 18px;
-          color: #f0ebe3;
-          letter-spacing: 0.02em;
-        }
-
-        .cc-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 42px;
-          font-weight: 700;
-          color: #f0ebe3;
-          line-height: 1.1;
-          margin: 0 0 6px;
-        }
-
-        .cc-title em {
-          font-style: italic;
-          color: #c8865c;
-        }
-
-        .cc-subtitle {
           font-size: 14px;
-          color: #7a7060;
-          font-weight: 300;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
+          font-weight: 400;
+          opacity: 0.9;
         }
 
-        .cc-divider {
-          width: 48px;
-          height: 1px;
-          background: linear-gradient(90deg, #c8865c, transparent);
-          margin: 1.2rem 0;
+        .signup-feature-icon {
+          width: 28px; height: 28px;
+          background: rgba(255,255,255,0.15);
+          border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 14px;
+          flex-shrink: 0;
         }
 
-        .cc-label {
-          display: block;
-          font-size: 11px;
+        /* Sağ panel */
+        .signup-right {
+          flex: 1;
+          background: #fafbfc;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3rem 2rem;
+        }
+
+        .signup-card {
+          width: 100%;
+          max-width: 400px;
+        }
+
+        .signup-welcome {
+          font-size: 26px;
+          font-weight: 700;
+          color: #1a1a2e;
+          margin-bottom: 6px;
+        }
+
+        .signup-subtitle {
+          font-size: 14px;
+          color: #8e8ea0;
+          font-weight: 400;
+          margin-bottom: 2rem;
+        }
+
+        .signup-google-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 12px 16px;
+          background: #fff;
+          border: 1.5px solid #e2e4e9;
+          border-radius: 12px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 14px;
           font-weight: 500;
-          color: #6a6050;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-          margin-bottom: 7px;
+          color: #3c4043;
+          cursor: pointer;
+          transition: all 0.2s;
         }
 
-        .cc-input {
+        .signup-google-btn:hover:not(:disabled) {
+          background: #f8f9fa;
+          border-color: #d0d5dd;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .signup-google-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        .signup-divider {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin: 1.5rem 0;
+        }
+
+        .signup-divider-line {
+          flex: 1;
+          height: 1px;
+          background: #e8e8ed;
+        }
+
+        .signup-divider-text {
+          font-size: 12px;
+          color: #b0b0c0;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .signup-field {
+          margin-bottom: 1rem;
+        }
+
+        .signup-label {
+          display: block;
+          font-size: 13px;
+          font-weight: 500;
+          color: #4a4a5a;
+          margin-bottom: 6px;
+        }
+
+        .signup-input {
           width: 100%;
           box-sizing: border-box;
-          background: rgba(255,255,255,0.04) !important;
-          border: 1px solid rgba(255,255,255,0.08) !important;
-          border-radius: 8px;
-          padding: 13px 16px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 15px;
-          color: #f0ebe3 !important;
+          padding: 12px 14px;
+          background: #fff;
+          border: 1.5px solid #e2e4e9;
+          border-radius: 10px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 14px;
+          color: #1a1a2e;
           outline: none;
-          transition: border-color 0.2s, background 0.2s;
+          transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .cc-input::placeholder {
-          color: #3a342c;
+        .signup-input::placeholder {
+          color: #c0c0d0;
         }
 
-        .cc-input:focus {
-          border-color: rgba(200,134,92,0.5) !important;
-          background: rgba(200,134,92,0.04) !important;
+        .signup-input:focus {
+          border-color: #764ba2;
+          box-shadow: 0 0 0 3px rgba(118,75,162,0.12);
         }
 
-        .cc-hint {
-          font-size: 11px;
-          color: #524840;
-          margin-top: 5px;
-          padding-left: 2px;
+        .signup-hint {
+          font-size: 12px;
+          color: #b0b0c0;
+          margin-top: 4px;
         }
 
-        .cc-btn {
+        .signup-submit {
           width: 100%;
-          margin-top: 0.4rem;
-          padding: 14px;
-          background: #c8865c;
+          padding: 12px;
+          background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
           border: none;
-          border-radius: 8px;
-          font-family: 'DM Sans', sans-serif;
+          border-radius: 10px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 15px;
-          font-weight: 500;
-          color: #1a120a;
+          font-weight: 600;
+          color: #fff;
           cursor: pointer;
-          letter-spacing: 0.02em;
-          transition: background 0.2s, transform 0.1s, opacity 0.2s;
+          transition: opacity 0.2s, transform 0.1s;
+          margin-top: 0.5rem;
         }
 
-        .cc-btn:hover:not(:disabled) {
-          background: #d99a72;
+        .signup-submit:hover:not(:disabled) {
+          opacity: 0.92;
         }
 
-        .cc-btn:active:not(:disabled) {
+        .signup-submit:active:not(:disabled) {
           transform: scale(0.99);
         }
 
-        .cc-btn:disabled {
+        .signup-submit:disabled {
           opacity: 0.5;
           cursor: not-allowed;
         }
 
-        .cc-footer-text {
+        .signup-msg-success {
+          padding: 10px 14px;
+          border-radius: 10px;
           font-size: 13px;
-          color: #524840;
-          text-align: center;
-          margin: 0 0 8px;
+          background: #ecfdf5;
+          border: 1px solid #a7f3d0;
+          color: #065f46;
+          margin-bottom: 1rem;
         }
 
-        .cc-link {
-          color: #c8865c;
+        .signup-msg-error {
+          padding: 10px 14px;
+          border-radius: 10px;
+          font-size: 13px;
+          background: #fef2f2;
+          border: 1px solid #fecaca;
+          color: #991b1b;
+          margin-bottom: 1rem;
+        }
+
+        .signup-footer {
+          text-align: center;
+          margin-top: 1.8rem;
+        }
+
+        .signup-footer-text {
+          font-size: 14px;
+          color: #8e8ea0;
+        }
+
+        .signup-footer-link {
+          color: #764ba2;
           text-decoration: none;
-          font-weight: 500;
+          font-weight: 600;
           transition: color 0.2s;
         }
 
-        .cc-link:hover {
-          color: #d99a72;
+        .signup-footer-link:hover {
+          color: #667eea;
         }
 
-        .cc-back {
+        .signup-back {
           display: inline-flex;
           align-items: center;
-          gap: 5px;
-          font-size: 12px;
-          color: #3a342c;
+          gap: 4px;
+          font-size: 13px;
+          color: #b0b0c0;
           text-decoration: none;
-          letter-spacing: 0.04em;
+          margin-top: 10px;
           transition: color 0.2s;
-          margin-top: 4px;
         }
 
-        .cc-back:hover { color: #7a7060; }
-
-        .cc-msg-success {
-          padding: 10px 14px;
-          border-radius: 8px;
-          font-size: 13px;
-          background: rgba(80, 160, 90, 0.15);
-          border: 1px solid rgba(80, 160, 90, 0.3);
-          color: #7ec88a;
+        .signup-back:hover {
+          color: #764ba2;
         }
 
-        .cc-msg-error {
-          padding: 10px 14px;
-          border-radius: 8px;
-          font-size: 13px;
-          background: rgba(200, 80, 70, 0.15);
-          border: 1px solid rgba(200, 80, 70, 0.3);
-          color: #e08878;
+        @media (max-width: 768px) {
+          .signup-page { flex-direction: column; }
+          .signup-left { display: none; }
+          .signup-right { padding: 2rem 1.5rem; min-height: 100vh; }
         }
       `}</style>
 
-      <div className="cc-page">
-        {/* Dekoratif arka plan halkalar */}
-        <svg
-          style={{ position: 'absolute', top: 24, right: -12, opacity: 0.06, pointerEvents: 'none' }}
-          width="180" height="180" viewBox="0 0 180 180" fill="none"
-        >
-          <circle cx="90" cy="90" r="80" stroke="#c8865c" strokeWidth="0.5"/>
-          <circle cx="90" cy="90" r="55" stroke="#c8865c" strokeWidth="0.5"/>
-          <circle cx="90" cy="90" r="30" stroke="#c8865c" strokeWidth="0.5"/>
-          <line x1="10" y1="90" x2="170" y2="90" stroke="#c8865c" strokeWidth="0.5"/>
-          <line x1="90" y1="10" x2="90" y2="170" stroke="#c8865c" strokeWidth="0.5"/>
-        </svg>
-
-        <div className="cc-card">
-          {/* Logo */}
-          <a href="/" className="cc-logo">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <rect width="36" height="36" rx="8" fill="rgba(200,134,92,0.15)"/>
-              <circle cx="14" cy="14" r="5" fill="#c8865c"/>
-              <circle cx="24" cy="12" r="3.5" fill="#a06090"/>
-              <circle cx="22" cy="23" r="4" fill="#6090b0"/>
-              <circle cx="13" cy="23" r="2.5" fill="#80a050"/>
-              <rect x="17" y="16" width="1.5" height="7" rx="0.75" fill="rgba(200,134,92,0.6)" transform="rotate(-15 17 16)"/>
-            </svg>
-            <span className="cc-logo-text">Concept Corner</span>
-          </a>
-
-          {/* Başlık */}
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h1 className="cc-title">
-              Aramıza<br /><em>katıl.</em>
-            </h1>
-            <div className="cc-divider" />
-            <p className="cc-subtitle">Yaratıcılar için bir köşe</p>
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-            <div style={{ marginBottom: '1.2rem' }}>
-              <label className="cc-label">Kullanıcı Adı</label>
-              <input
-                type="text"
-                className="cc-input"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-                placeholder="isminiz veya takma adınız"
-              />
+      <div className="signup-page">
+        {/* Sol dekoratif panel */}
+        <div className="signup-left">
+          <div className="signup-left-content">
+            <div className="signup-left-logo">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                <circle cx="14" cy="14" r="5" fill="rgba(255,255,255,0.9)"/>
+                <circle cx="24" cy="12" r="3.5" fill="rgba(255,255,255,0.6)"/>
+                <circle cx="22" cy="23" r="4" fill="rgba(255,255,255,0.7)"/>
+                <circle cx="13" cy="23" r="2.5" fill="rgba(255,255,255,0.5)"/>
+              </svg>
             </div>
+            <h2>Yaratıcı topluluğa<br/>katıl</h2>
+            <p>Binlerce yaratıcıyla birlikte konseptlerini paylaş ve ilham al.</p>
 
-            <div style={{ marginBottom: '1.2rem' }}>
-              <label className="cc-label">E-posta</label>
-              <input
-                type="email"
-                className="cc-input"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="ornek@mail.com"
-              />
-            </div>
-
-            <div style={{ marginBottom: '1.2rem' }}>
-              <label className="cc-label">Şifre</label>
-              <input
-                type="password"
-                className="cc-input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                placeholder="••••••••"
-              />
-              <p className="cc-hint">En az 6 karakter</p>
-            </div>
-
-            {message && (
-              <div className={isSuccess ? 'cc-msg-success' : 'cc-msg-error'} style={{ marginBottom: '1rem' }}>
-                {message}
+            <div className="signup-features">
+              <div className="signup-feature">
+                <div className="signup-feature-icon">🎨</div>
+                <span>Konseptlerini oluştur ve paylaş</span>
               </div>
-            )}
+              <div className="signup-feature">
+                <div className="signup-feature-icon">🏆</div>
+                <span>Rozetler kazan, skor tablosunda yüksel</span>
+              </div>
+              <div className="signup-feature">
+                <div className="signup-feature-icon">💬</div>
+                <span>Yaratıcılarla etkileşime geç</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            <button type="submit" className="cc-btn" disabled={loading}>
-              {loading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
+        {/* Sağ form paneli */}
+        <div className="signup-right">
+          <div className="signup-card">
+            <h1 className="signup-welcome">Hesap oluştur ✨</h1>
+            <p className="signup-subtitle">Hemen ücretsiz kayıt ol ve keşfetmeye başla</p>
+
+            {/* Google ile kayıt */}
+            <button
+              className="signup-google-btn"
+              onClick={handleGoogleSignup}
+              disabled={googleLoading}
+            >
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+                <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+                <path d="M3.964 10.71A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+                <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+              </svg>
+              {googleLoading ? 'Yönlendiriliyorsunuz...' : 'Google ile devam et'}
             </button>
-          </form>
 
-          {/* Footer */}
-          <div style={{ marginTop: '1.8rem', textAlign: 'center' }}>
-            <p className="cc-footer-text">
-              Zaten hesabınız var mı?{' '}
-              <a href="/auth/login" className="cc-link">Giriş yapın</a>
-            </p>
-            <a href="/" className="cc-back">← Ana sayfaya dön</a>
+            {/* Ayırıcı */}
+            <div className="signup-divider">
+              <div className="signup-divider-line" />
+              <span className="signup-divider-text">veya e-posta ile</span>
+              <div className="signup-divider-line" />
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSignup}>
+              <div className="signup-field">
+                <label className="signup-label">Kullanıcı Adı</label>
+                <input
+                  type="text"
+                  className="signup-input"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  placeholder="isminiz veya takma adınız"
+                />
+              </div>
+
+              <div className="signup-field">
+                <label className="signup-label">E-posta</label>
+                <input
+                  type="email"
+                  className="signup-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  placeholder="ornek@mail.com"
+                />
+              </div>
+
+              <div className="signup-field">
+                <label className="signup-label">Şifre</label>
+                <input
+                  type="password"
+                  className="signup-input"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  placeholder="••••••••"
+                />
+                <p className="signup-hint">En az 6 karakter</p>
+              </div>
+
+              {message && (
+                <div className={isSuccess ? 'signup-msg-success' : 'signup-msg-error'}>
+                  {message}
+                </div>
+              )}
+
+              <button type="submit" className="signup-submit" disabled={loading}>
+                {loading ? 'Kayıt yapılıyor...' : 'Kayıt Ol'}
+              </button>
+            </form>
+
+            {/* Footer */}
+            <div className="signup-footer">
+              <p className="signup-footer-text">
+                Zaten hesabın var mı?{' '}
+                <a href="/auth/login" className="signup-footer-link">Giriş yap</a>
+              </p>
+              <a href="/" className="signup-back">← Ana sayfaya dön</a>
+            </div>
           </div>
         </div>
       </div>
