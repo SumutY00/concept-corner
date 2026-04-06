@@ -86,3 +86,10 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* Mobil navbar sadeleştirme */
+@media (max-width: 768px) {
+  .cc-hide-mobile {
+    display: none !important;
+  }
+}

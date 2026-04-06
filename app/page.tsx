@@ -206,19 +206,19 @@ export default async function Home() {
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <div className="cc-nav-right">
-            <a href="/explore" className="cc-nav-link">Keşfet</a>
+            <a href="/explore" className="cc-nav-link cc-hide-mobile">Keşfet</a>
             <a href="/search" className="cc-nav-link">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
             </a>
-            <ThemeSwitcher />
+            <span className="cc-hide-mobile"><ThemeSwitcher /></span>
             {user && <MsgBell />}
-            {user && <NotifBell />}
+            {user && <span className="cc-hide-mobile"><NotifBell /></span>}
             {user && currentUserProfile ? (
               <>
-                <a href="/post/new" className="cc-nav-btn">+ Paylaş</a>
-                <a href={`/profile/${currentUserProfile.username}`} className="cc-nav-avatar">
+                <a href="/post/new" className="cc-nav-btn cc-hide-mobile">+ Paylaş</a>
+                <a href={`/profile/${currentUserProfile.username}`} className="cc-nav-avatar cc-hide-mobile">
                   {currentUserProfile.avatar_url
                     ? <img src={currentUserProfile.avatar_url} alt="" />
                     : currentUserProfile.username?.[0]?.toUpperCase()
