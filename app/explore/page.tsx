@@ -49,7 +49,7 @@ export default async function ExplorePage({
 
         .cc-nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; background: var(--cc-navbar); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cc-border); }
         .cc-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .cc-logo-text { font-family: var(--cc-font-heading); font-size: 18px; color: var(--cc-text-primary); font-weight: 700; }
+        .cc-logo-text { font-family: var(--cc-font-heading); font-size: 22px; color: var(--cc-text-primary); font-weight: 700; }
         .cc-back { font-size: 13px; color: var(--cc-text-muted); text-decoration: none; transition: color 0.2s; }
         .cc-back:hover { color: var(--cc-text-primary); }
 
@@ -112,7 +112,7 @@ export default async function ExplorePage({
       <div className="cc-page">
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 44, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <a href="/" className="cc-back">← Akışa dön</a>

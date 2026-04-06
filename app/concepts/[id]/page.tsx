@@ -83,7 +83,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ id: st
           border-bottom: 1px solid var(--cc-border);
         }
         .cc-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .cc-logo-text { font-family: var(--cc-font-heading); font-size: 18px; color: var(--cc-text-primary); font-weight: 700; }
+        .cc-logo-text { font-family: var(--cc-font-heading); font-size: 22px; color: var(--cc-text-primary); font-weight: 700; }
         .cc-back { font-size: 13px; color: var(--cc-text-muted); text-decoration: none; transition: color 0.2s; }
         .cc-back:hover { color: var(--cc-text-primary); }
         .cc-nav-btn { font-size: 13px; font-weight: 600; color: #fff; background: var(--cc-gradient); text-decoration: none; padding: 8px 20px; border-radius: var(--cc-radius-sm); transition: opacity 0.2s; }
@@ -285,7 +285,7 @@ export default async function ConceptPage({ params }: { params: Promise<{ id: st
       <div className="cc-page">
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 44, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>

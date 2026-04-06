@@ -360,7 +360,7 @@ export default function LoginPage() {
         <div className="login-left">
           <div className="login-left-content">
             <div className="login-left-logo">
-              <img src="/logo.png" alt="Concept Corner" style={{ height: 48, width: 'auto' }} />
+              <img src="/logo.png" alt="Concept Corner" style={{ height: 56, width: 'auto' }} />
             </div>
             <h2>Yaratıcılığını<br/>keşfet ve paylaş</h2>
             <p>Konseptlerini oluştur, ilham al ve yaratıcı topluluğun bir parçası ol.</p>

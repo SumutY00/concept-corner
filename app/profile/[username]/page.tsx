@@ -160,7 +160,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
 
         .cc-nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; background: var(--cc-navbar); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cc-border); }
         .cc-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .cc-logo-text { font-family: var(--cc-font-heading); font-size: 18px; color: var(--cc-text-primary); font-weight: 700; }
+        .cc-logo-text { font-family: var(--cc-font-heading); font-size: 22px; color: var(--cc-text-primary); font-weight: 700; }
         .cc-nav-btn { font-size: 13px; font-weight: 600; color: #fff; background: var(--cc-gradient); text-decoration: none; padding: 8px 20px; border-radius: var(--cc-radius-sm); transition: opacity 0.2s; }
         .cc-nav-btn:hover { opacity: 0.88; }
 
@@ -240,7 +240,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
       <div className="cc-page">
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 44, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <div style={{ display: 'flex', gap: '8px' }}>

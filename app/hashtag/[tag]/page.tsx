@@ -50,7 +50,7 @@ export default async function HashtagPage({ params }: { params: Promise<{ tag: s
 
         .ht-nav { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; background: var(--cc-navbar); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cc-border); }
         .ht-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .ht-logo-text { font-family: var(--cc-font-heading); font-size: 18px; color: var(--cc-text-primary); font-weight: 700; }
+        .ht-logo-text { font-family: var(--cc-font-heading); font-size: 22px; color: var(--cc-text-primary); font-weight: 700; }
         .ht-back { font-size: 13px; color: var(--cc-text-muted); text-decoration: none; transition: color 0.2s; }
         .ht-back:hover { color: var(--cc-text-primary); }
 
@@ -92,7 +92,7 @@ export default async function HashtagPage({ params }: { params: Promise<{ tag: s
       <div className="ht-page">
         <nav className="ht-nav">
           <a href="/" className="ht-logo">
-            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 44, width: 'auto' }} />
             <span className="ht-logo-text">Concept Corner</span>
           </a>
           <a href="/" className="ht-back">← Akışa dön</a>

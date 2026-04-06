@@ -255,7 +255,7 @@ export default function NewPostPage() {
 
         <nav className="cc-nav">
           <a href="/" className="cc-logo">
-            <img src="/logo.png" alt="Concept Corner" style={{ height: 36, width: 'auto' }} />
+            <img src="/logo.png" alt="Concept Corner" style={{ height: 44, width: 'auto' }} />
             <span className="cc-logo-text">Concept Corner</span>
           </a>
           <a href="/" className="cc-back">← Geri dön</a>
