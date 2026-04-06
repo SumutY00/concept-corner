@@ -1,0 +1,83 @@
+/* ============================================
+   CONCEPT CORNER — TEMA SİSTEMİ
+   ============================================ */
+
+/* Varsayılan: Dark Social (mevcut koyu tema) */
+:root,
+[data-theme="dark-social"] {
+  --cc-bg: #0B1020;
+  --cc-surface: #12182B;
+  --cc-surface-alt: #1A2238;
+  --cc-border: #26314D;
+  --cc-text-primary: #F3F6FF;
+  --cc-text-secondary: #B8C1D9;
+  --cc-text-muted: #7C88A5;
+  --cc-primary: #4F7CFF;
+  --cc-primary-hover: #3B6CF3;
+  --cc-accent: #18C8FF;
+  --cc-like: #FF5A7A;
+  --cc-success: #22C55E;
+  --cc-warning: #FFB547;
+  --cc-navbar: rgba(15, 21, 40, 0.85);
+  --cc-radius: 18px;
+  --cc-radius-sm: 10px;
+  --cc-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --cc-font-heading: 'Sora', sans-serif;
+  --cc-font-body: 'Inter', sans-serif;
+}
+
+[data-theme="soft-modern"] {
+  --cc-bg: #F7F8FC;
+  --cc-surface: #FFFFFF;
+  --cc-surface-alt: #F1F3FA;
+  --cc-border: #E4E8F2;
+  --cc-text-primary: #151B2B;
+  --cc-text-secondary: #667085;
+  --cc-text-muted: #98A2B3;
+  --cc-primary: #635BFF;
+  --cc-primary-hover: #5348F5;
+  --cc-accent: #22C7A8;
+  --cc-like: #FF4D6D;
+  --cc-success: #22C7A8;
+  --cc-warning: #FFB84D;
+  --cc-navbar: rgba(255, 255, 255, 0.9);
+  --cc-radius: 16px;
+  --cc-radius-sm: 8px;
+  --cc-shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+  --cc-font-heading: 'Inter', sans-serif;
+  --cc-font-body: 'Inter', sans-serif;
+}
+
+[data-theme="minimal-energetic"] {
+  --cc-bg: #FCFCFE;
+  --cc-surface: #FFFFFF;
+  --cc-surface-alt: #F7F8FB;
+  --cc-border: #E7EAF1;
+  --cc-text-primary: #161A24;
+  --cc-text-secondary: #6B7280;
+  --cc-text-muted: #9AA3B2;
+  --cc-primary: #FF5C7A;
+  --cc-primary-hover: #F04C6A;
+  --cc-accent: #5B6CFF;
+  --cc-like: #FF5C7A;
+  --cc-success: #22C55E;
+  --cc-warning: #FFB84D;
+  --cc-navbar: rgba(255, 255, 255, 0.92);
+  --cc-radius: 20px;
+  --cc-radius-sm: 12px;
+  --cc-shadow: 0 8px 20px rgba(17, 24, 39, 0.07);
+  --cc-font-heading: 'Plus Jakarta Sans', sans-serif;
+  --cc-font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Global reset */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  background: var(--cc-bg);
+  color: var(--cc-text-primary);
+  font-family: var(--cc-font-body);
+  transition: background 0.3s ease, color 0.3s ease;
+  margin: 0;
+  padding: 0;
+}
