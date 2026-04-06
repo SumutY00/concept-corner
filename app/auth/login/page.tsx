@@ -415,7 +415,7 @@ export default function LoginPage() {
         <div className="login-left">
           <div className="login-left-content">
             <div className="login-left-logo">
-              <img src="/concept-corner-logo.png" alt="Concept Corner" />
+              <img src="/logo.png" alt="Concept Corner" />
             </div>
 
             <h2>
