@@ -43,12 +43,16 @@ export async function POST(request: NextRequest) {
     if (error && error.code !== '23505') {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
-    await supabase.from('notifications').insert({
-      user_id: following_id,
-      actor_id: user.id,
-      type: 'follow',
-      message: 'seni takip etmeye başladı',
-    })
+    const { data: targetPrefs } = await supabase
+      .from('users').select('notification_follows').eq('id', following_id).single()
+    if (targetPrefs?.notification_follows !== false) {
+      await supabase.from('notifications').insert({
+        user_id: following_id,
+        actor_id: user.id,
+        type: 'follow',
+        message: 'seni takip etmeye başladı',
+      })
+    }
     return NextResponse.json({ success: true, action: 'followed' })
   }
 
@@ -63,12 +67,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Send follow_request notification
-    await supabase.from('notifications').insert({
-      user_id: following_id,
-      actor_id: user.id,
-      type: 'follow_request',
-      message: 'seni takip etmek istiyor',
-    })
+    const { data: reqTargetPrefs } = await supabase
+      .from('users').select('notification_follows').eq('id', following_id).single()
+    if (reqTargetPrefs?.notification_follows !== false) {
+      await supabase.from('notifications').insert({
+        user_id: following_id,
+        actor_id: user.id,
+        type: 'follow_request',
+        message: 'seni takip etmek istiyor',
+      })
+    }
 
     return NextResponse.json({ success: true, action: 'requested' })
   }
@@ -112,12 +120,16 @@ export async function POST(request: NextRequest) {
       .eq('target_id', user.id)
 
     // Notify requester that their request was accepted
-    await supabase.from('notifications').insert({
-      user_id: following_id,
-      actor_id: user.id,
-      type: 'follow',
-      message: 'takip isteğini kabul etti',
-    })
+    const { data: acceptedPrefs } = await supabase
+      .from('users').select('notification_follows').eq('id', following_id).single()
+    if (acceptedPrefs?.notification_follows !== false) {
+      await supabase.from('notifications').insert({
+        user_id: following_id,
+        actor_id: user.id,
+        type: 'follow',
+        message: 'takip isteğini kabul etti',
+      })
+    }
 
     return NextResponse.json({ success: true, action: 'accepted' })
   }

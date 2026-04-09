@@ -155,13 +155,17 @@ export default function PostDetail({ params }: { params: Promise<{ id: string }>
       showToast('Beğenildi')
 
       if (post.users?.id !== currentUser.id) {
-        await supabase.from('notifications').insert({
-          user_id: post.users.id,
-          actor_id: currentUser.id,
-          type: 'like',
-          post_id: postId,
-          message: 'gönderini beğendi',
-        })
+        const { data: likePrefs } = await supabase
+          .from('users').select('notification_likes').eq('id', post.users.id).single()
+        if (likePrefs?.notification_likes !== false) {
+          await supabase.from('notifications').insert({
+            user_id: post.users.id,
+            actor_id: currentUser.id,
+            type: 'like',
+            post_id: postId,
+            message: 'gönderini beğendi',
+          })
+        }
       }
     }
     setLikeLoading(false)
@@ -197,22 +201,26 @@ export default function PostDetail({ params }: { params: Promise<{ id: string }>
     })
 
     if (post.users?.id !== currentUser.id) {
-      await supabase.from('notifications').insert({
-        user_id: post.users.id,
-        actor_id: currentUser.id,
-        type: 'comment',
-        post_id: postId,
-        message: 'gönderine yorum yaptı',
-      })
+      const { data: commentPrefs } = await supabase
+        .from('users').select('notification_comments').eq('id', post.users.id).single()
+      if (commentPrefs?.notification_comments !== false) {
+        await supabase.from('notifications').insert({
+          user_id: post.users.id,
+          actor_id: currentUser.id,
+          type: 'comment',
+          post_id: postId,
+          message: 'gönderine yorum yaptı',
+        })
+      }
     }
 
     // @mention bildirimleri
     const mentionedUsernames = [...new Set((newComment.match(/@(\w+)/g) ?? []).map((m: string) => m.slice(1)))]
     if (mentionedUsernames.length > 0) {
       const { data: mentionedUsers } = await supabase
-        .from('users').select('id, username').in('username', mentionedUsernames)
+        .from('users').select('id, username, notification_mentions').in('username', mentionedUsernames)
       for (const mu of mentionedUsers ?? []) {
-        if (mu.id !== currentUser.id) {
+        if (mu.id !== currentUser.id && mu.notification_mentions !== false) {
           await supabase.from('notifications').insert({
             user_id: mu.id,
             actor_id: currentUser.id,
@@ -246,22 +254,26 @@ export default function PostDetail({ params }: { params: Promise<{ id: string }>
     const { data: parentComment } = await supabase
       .from('comments').select('user_id').eq('id', replyTo.id).single()
     if (parentComment && parentComment.user_id !== currentUser.id) {
-      await supabase.from('notifications').insert({
-        user_id: parentComment.user_id,
-        actor_id: currentUser.id,
-        type: 'reply',
-        post_id: postId,
-        message: 'yorumunu yanıtladı',
-      })
+      const { data: replyPrefs } = await supabase
+        .from('users').select('notification_comments').eq('id', parentComment.user_id).single()
+      if (replyPrefs?.notification_comments !== false) {
+        await supabase.from('notifications').insert({
+          user_id: parentComment.user_id,
+          actor_id: currentUser.id,
+          type: 'reply',
+          post_id: postId,
+          message: 'yorumunu yanıtladı',
+        })
+      }
     }
 
     // @mention bildirimleri
     const mentionedUsernames = [...new Set((replyText.match(/@(\w+)/g) ?? []).map((m: string) => m.slice(1)))]
     if (mentionedUsernames.length > 0) {
       const { data: mentionedUsers } = await supabase
-        .from('users').select('id, username').in('username', mentionedUsernames)
+        .from('users').select('id, username, notification_mentions').in('username', mentionedUsernames)
       for (const mu of mentionedUsers ?? []) {
-        if (mu.id !== currentUser.id) {
+        if (mu.id !== currentUser.id && mu.notification_mentions !== false) {
           await supabase.from('notifications').insert({
             user_id: mu.id, actor_id: currentUser.id,
             type: 'mention', post_id: postId,

@@ -166,14 +166,18 @@ export default function ConversationPage({ params }: { params: Promise<{ id: str
         .update({ last_message_at: new Date().toISOString() })
         .eq('id', conversationId)
 
-      // Bildirim gönder (karşı tarafa)
+      // Bildirim gönder (karşı tarafa — tercihe göre)
       if (otherUser) {
-        await supabase.from('notifications').insert({
-          user_id: otherUser.id,
-          actor_id: currentUserId,
-          type: 'message',
-          message: 'sana bir mesaj gönderdi',
-        })
+        const { data: msgPrefs } = await supabase
+          .from('users').select('notification_messages').eq('id', otherUser.id).single()
+        if (msgPrefs?.notification_messages !== false) {
+          await supabase.from('notifications').insert({
+            user_id: otherUser.id,
+            actor_id: currentUserId,
+            type: 'message',
+            message: 'sana bir mesaj gönderdi',
+          })
+        }
       }
     } else {
       // Başarısız — geri al

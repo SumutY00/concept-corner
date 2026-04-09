@@ -9,6 +9,7 @@ const protectedRoutes = [
   '/profile/edit',
   '/notifications',
   '/messages',
+  '/settings',
 ]
 
 const adminRoutes = [
@@ -60,6 +61,7 @@ export const config = {
     '/notifications',
     '/messages',
     '/messages/:path*',
+    '/settings',
     '/admin/:path*',
   ],
 }

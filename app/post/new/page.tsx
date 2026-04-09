@@ -122,18 +122,17 @@ export default function NewPostPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         .cc-page {
-          min-height: 100vh; background: #0e0c0a;
-          font-family: 'DM Sans', sans-serif; color: #f0ebe3; position: relative;
+          min-height: 100vh; background: var(--cc-bg);
+          font-family: var(--cc-font-body); color: var(--cc-text-primary); position: relative;
         }
 
         .cc-glow {
           position: fixed; top: -160px; left: -160px;
           width: 600px; height: 600px; border-radius: 50%;
-          background: radial-gradient(circle, rgba(210,130,70,0.08) 0%, transparent 70%);
+          background: radial-gradient(circle, rgba(102,126,234,0.07) 0%, transparent 70%);
           pointer-events: none; z-index: 0;
         }
 
@@ -141,113 +140,122 @@ export default function NewPostPage() {
           position: sticky; top: 0; z-index: 100;
           display: flex; align-items: center; justify-content: space-between;
           padding: 1rem 2.5rem;
-          background: rgba(14,12,10,0.85); backdrop-filter: blur(12px);
-          border-bottom: 1px solid rgba(255,255,255,0.05);
+          background: var(--cc-navbar); backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--cc-border);
         }
 
         .cc-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-        .cc-logo-text { font-family: 'Playfair Display', serif; font-size: 18px; color: #f0ebe3; letter-spacing: 0.02em; }
-        .cc-back { font-size: 13px; color: #6a6050; text-decoration: none; transition: color 0.2s; }
-        .cc-back:hover { color: #f0ebe3; }
+        .cc-logo-text { font-family: var(--cc-font-heading); font-size: 18px; font-weight: 700; color: var(--cc-text-primary); letter-spacing: 0.02em; }
+        .cc-back { font-size: 13px; color: var(--cc-text-muted); text-decoration: none; transition: color 0.2s; }
+        .cc-back:hover { color: var(--cc-text-primary); }
 
         .cc-container { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 4rem 2rem; }
 
-        .cc-title { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; color: #f0ebe3; line-height: 1.1; margin-bottom: 6px; }
-        .cc-title em { font-style: italic; color: #c8865c; }
+        .cc-title { font-family: var(--cc-font-heading); font-size: 38px; font-weight: 700; color: var(--cc-text-primary); line-height: 1.1; margin-bottom: 6px; }
+        .cc-title em {
+          font-style: italic;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
 
-        .cc-divider { width: 48px; height: 1px; background: linear-gradient(90deg, #c8865c, transparent); margin: 1rem 0 2.5rem; }
+        .cc-divider { width: 48px; height: 2px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 2px; margin: 1rem 0 2.5rem; }
 
-        .cc-label { display: block; font-size: 11px; font-weight: 500; color: #6a6050; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
+        .cc-label { display: block; font-size: 11px; font-weight: 600; color: var(--cc-text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 7px; }
 
         .cc-input, .cc-textarea, .cc-select {
           width: 100%;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.08);
-          border-radius: 8px; padding: 13px 16px;
-          font-family: 'DM Sans', sans-serif;
-          font-size: 15px; color: #f0ebe3; outline: none;
-          transition: border-color 0.2s, background 0.2s;
+          background: var(--cc-surface);
+          border: 1.5px solid var(--cc-border);
+          border-radius: 10px; padding: 13px 16px;
+          font-family: var(--cc-font-body);
+          font-size: 15px; color: var(--cc-text-primary); outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        .cc-input::placeholder, .cc-textarea::placeholder { color: #3a342c; }
-        .cc-input:focus, .cc-textarea:focus, .cc-select:focus { border-color: rgba(200,134,92,0.5); background: rgba(200,134,92,0.04); }
+        .cc-input::placeholder, .cc-textarea::placeholder { color: var(--cc-text-muted); opacity: 0.5; }
+        .cc-input:focus, .cc-textarea:focus, .cc-select:focus {
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102,126,234,0.12);
+        }
         .cc-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
-        .cc-select option { background: #1a140e; color: #f0ebe3; }
+        .cc-select option { background: var(--cc-bg); color: var(--cc-text-primary); }
 
         .cc-field { margin-bottom: 1.4rem; }
 
         /* Konsept bilgi kartı */
         .cc-concept-info {
-          background: rgba(200,134,92,0.06);
-          border: 1px solid rgba(200,134,92,0.15);
+          background: rgba(102,126,234,0.05);
+          border: 1.5px solid rgba(102,126,234,0.2);
           border-radius: 10px; padding: 1.2rem;
           margin-top: 10px;
         }
 
         .cc-concept-info-name {
-          font-family: 'Playfair Display', serif;
-          font-size: 18px; font-weight: 700; color: #f0ebe3;
+          font-family: var(--cc-font-heading);
+          font-size: 18px; font-weight: 700; color: var(--cc-text-primary);
           margin-bottom: 6px;
         }
 
-        .cc-concept-info-desc { font-size: 13px; color: #7a7060; line-height: 1.6; margin-bottom: 8px; }
+        .cc-concept-info-desc { font-size: 13px; color: var(--cc-text-secondary); line-height: 1.6; margin-bottom: 8px; }
 
         .cc-concept-info-rules {
-          font-size: 12px; color: #c8865c;
+          font-size: 12px; color: var(--cc-primary);
           line-height: 1.6; font-style: italic;
           padding-top: 8px;
-          border-top: 1px solid rgba(200,134,92,0.1);
+          border-top: 1px solid rgba(102,126,234,0.15);
         }
 
         .cc-concept-dates {
-          font-size: 11px; color: #524840;
+          font-size: 11px; color: var(--cc-text-muted);
           margin-top: 8px; letter-spacing: 0.04em;
         }
 
         /* Upload */
         .cc-upload-area {
-          width: 100%; border: 1px dashed rgba(255,255,255,0.12);
-          border-radius: 8px; padding: 2rem; text-align: center;
+          width: 100%; border: 2px dashed var(--cc-border);
+          border-radius: 10px; padding: 2rem; text-align: center;
           cursor: pointer; transition: border-color 0.2s, background 0.2s;
-          background: rgba(255,255,255,0.02); position: relative;
+          background: var(--cc-surface); position: relative;
         }
 
-        .cc-upload-area:hover { border-color: rgba(200,134,92,0.4); background: rgba(200,134,92,0.03); }
+        .cc-upload-area:hover { border-color: var(--cc-primary); background: rgba(102,126,234,0.03); }
         .cc-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 
         .cc-upload-icon {
-          width: 36px; height: 36px; margin: 0 auto 10px;
-          border-radius: 50%; background: rgba(200,134,92,0.12);
+          width: 40px; height: 40px; margin: 0 auto 10px;
+          border-radius: 50%; background: rgba(102,126,234,0.1);
           display: flex; align-items: center; justify-content: center;
         }
 
-        .cc-upload-text { font-size: 14px; color: #6a6050; }
-        .cc-upload-sub { font-size: 12px; color: #3a342c; margin-top: 4px; }
+        .cc-upload-text { font-size: 14px; color: var(--cc-text-secondary); font-weight: 500; }
+        .cc-upload-sub { font-size: 12px; color: var(--cc-text-muted); margin-top: 4px; }
 
-        .cc-preview { width: 100%; border-radius: 8px; overflow: hidden; margin-top: 12px; border: 1px solid rgba(255,255,255,0.08); }
+        .cc-preview { width: 100%; border-radius: 10px; overflow: hidden; margin-top: 12px; border: 1.5px solid var(--cc-border); }
         .cc-preview img { width: 100%; display: block; max-height: 360px; object-fit: cover; }
 
         .cc-btn {
           width: 100%; padding: 14px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
           border: none; border-radius: 10px;
-          font-family: 'Plus Jakarta Sans', sans-serif; font-size: 15px; font-weight: 600; color: #fff;
+          font-family: var(--cc-font-body); font-size: 15px; font-weight: 600; color: #fff;
           cursor: pointer; letter-spacing: 0.02em; transition: opacity 0.2s; margin-top: 0.5rem;
         }
 
         .cc-btn:hover:not(:disabled) { opacity: 0.88; }
         .cc-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .cc-msg-error { padding: 10px 14px; border-radius: 8px; font-size: 13px; background: rgba(200,80,70,0.15); border: 1px solid rgba(200,80,70,0.3); color: #e08878; margin-bottom: 1rem; }
+        .cc-msg-error { padding: 10px 14px; border-radius: 10px; font-size: 13px; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; margin-bottom: 1rem; }
 
         .cc-no-concepts {
           text-align: center; padding: 3rem;
-          background: rgba(255,255,255,0.02);
-          border: 1px solid rgba(255,255,255,0.06);
-          border-radius: 12px;
+          background: var(--cc-surface);
+          border: 1.5px solid var(--cc-border);
+          border-radius: 16px;
         }
 
-        .cc-no-concepts-title { font-family: 'Playfair Display', serif; font-size: 22px; color: #3a342c; margin-bottom: 8px; }
-        .cc-no-concepts-sub { font-size: 14px; color: #2a2420; }
+        .cc-no-concepts-title { font-family: var(--cc-font-heading); font-size: 22px; font-weight: 700; color: var(--cc-text-muted); margin-bottom: 8px; }
+        .cc-no-concepts-sub { font-size: 14px; color: var(--cc-text-muted); }
       `}</style>
 
       <div className="cc-page">
@@ -321,20 +329,20 @@ export default function NewPostPage() {
                 {description.match(/#[\wçğıöşüÇĞİÖŞÜ]+/gi) && (
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
                     {[...new Set(description.match(/#[\wçğıöşüÇĞİÖŞÜ]+/gi) ?? [])].map(tag => (
-                      <span key={tag} style={{ fontSize: 12, color: '#a06090', background: 'rgba(160,96,144,0.12)', padding: '2px 8px', borderRadius: 20 }}>{tag}</span>
+                      <span key={tag} style={{ fontSize: 12, color: '#667eea', background: 'rgba(102,126,234,0.1)', padding: '2px 8px', borderRadius: 20, fontWeight: 500 }}>{tag}</span>
                     ))}
                   </div>
                 )}
               </div>
 
               <div className="cc-field">
-                <label className="cc-label">Görseller <span style={{ color: '#524840', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>({images.length}/{MAX_IMAGES})</span></label>
+                <label className="cc-label">Görseller <span style={{ color: 'var(--cc-text-muted)', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>({images.length}/{MAX_IMAGES})</span></label>
 
                 {/* Önizleme grid */}
                 {previews.length > 0 && (
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 8, marginBottom: 10 }}>
                     {previews.map((src, i) => (
-                      <div key={i} style={{ position: 'relative', borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.08)', aspectRatio: '1' }}>
+                      <div key={i} style={{ position: 'relative', borderRadius: 10, overflow: 'hidden', border: '1.5px solid var(--cc-border)', aspectRatio: '1' }}>
                         {images[i]?.type.startsWith('video/')
                           ? <video src={src} muted style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                           : <img src={src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
@@ -350,7 +358,7 @@ export default function NewPostPage() {
                           }}
                         >×</button>
                         {i === 0 && (
-                          <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 10, background: 'rgba(200,134,92,0.85)', color: '#fff', borderRadius: 4, padding: '1px 5px' }}>Kapak</span>
+                          <span style={{ position: 'absolute', bottom: 4, left: 4, fontSize: 10, background: 'linear-gradient(135deg, #667eea, #764ba2)', color: '#fff', borderRadius: 4, padding: '1px 5px' }}>Kapak</span>
                         )}
                       </div>
                     ))}
@@ -362,7 +370,7 @@ export default function NewPostPage() {
                   <div className="cc-upload-area">
                     <input type="file" accept="image/*,video/*" multiple onChange={handleImageChange} />
                     <div className="cc-upload-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c8865c" strokeWidth="2">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#667eea" strokeWidth="2">
                         <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
                         <polyline points="17 8 12 3 7 8"/>
                         <line x1="12" y1="3" x2="12" y2="15"/>
