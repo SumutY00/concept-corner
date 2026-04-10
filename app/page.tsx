@@ -5,7 +5,7 @@ import NotifBell from './components/NotifBell'
 import MsgBell from './components/MsgBell'
 import { redirect } from 'next/navigation'
 
-async function getHomeData() {
+async function getHomeData(feedFilter: 'takip' | 'trend' | 'kesif') {
   const cookieStore = await cookies()
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,7 +27,8 @@ async function getHomeData() {
   let feedPosts: any[] = []
   let isPersonalFeed = false
 
-  if (user) {
+  // Takip ettikleri — "takip" filtresi veya varsayılan (trend/kesif seçilmemişse)
+  if (feedFilter !== 'trend' && feedFilter !== 'kesif') {
     const { data: follows } = await supabase
       .from('follows')
       .select('following_id')
@@ -43,17 +44,30 @@ async function getHomeData() {
         .order('created_at', { ascending: false })
         .limit(40)
       feedPosts = data ?? []
-      isPersonalFeed = true
+      isPersonalFeed = feedFilter === 'takip' || feedPosts.length > 0
     }
   }
 
-  if (feedPosts.length === 0) {
+  // Trend filtresi
+  if (feedFilter === 'trend') {
+    const { data } = await supabase
+      .from('posts')
+      .select('*, users(username, avatar_url, is_private), categories(name, icon)')
+      .order('trend_score', { ascending: false })
+      .limit(40)
+    feedPosts = (data ?? []).filter((p: any) => !p.users?.is_private)
+    isPersonalFeed = false
+  }
+
+  // Keşfet veya takip edilen kimse yoksa global feed
+  if (feedPosts.length === 0 || feedFilter === 'kesif') {
     const { data } = await supabase
       .from('posts')
       .select('*, users(username, avatar_url, is_private), categories(name, icon)')
       .order('created_at', { ascending: false })
       .limit(80)
     feedPosts = (data ?? []).filter((p: any) => !p.users?.is_private).slice(0, 40)
+    isPersonalFeed = false
   }
 
   let conceptPosts: any[] = []
@@ -101,7 +115,7 @@ async function getHomeData() {
     suggestions = data ?? []
   }
 
-  return { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, isPersonalFeed, categories, suggestions }
+  return { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, categories, suggestions }
 }
 
 function getDaysLeft(endDate: string) {
@@ -123,8 +137,14 @@ function timeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
 }
 
-export default async function Home() {
-  const { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, isPersonalFeed, categories, suggestions } = await getHomeData()
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ feed?: string }>
+}) {
+  const params = await searchParams
+  const feedFilter = (params?.feed === 'trend' ? 'trend' : params?.feed === 'kesif' ? 'kesif' : 'takip') as 'takip' | 'trend' | 'kesif'
+  const { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, categories, suggestions } = await getHomeData(feedFilter)
   const daysLeft = activeConcept ? getDaysLeft(activeConcept.end_date) : 0
 
   return (
@@ -677,17 +697,22 @@ export default async function Home() {
             <div className="cc-feed-header">
               <div className="cc-feed-left">
                 <div className="cc-feed-icon">
-                  {isPersonalFeed ? '✨' : '🔥'}
+                  {feedFilter === 'trend' ? '🔥' : feedFilter === 'kesif' ? '🌍' : '✨'}
                 </div>
-                <h1 className="cc-feed-title">{isPersonalFeed ? 'Akışın' : 'Keşfet'}</h1>
+                <h1 className="cc-feed-title">
+                  {feedFilter === 'trend' ? 'Trend' : feedFilter === 'kesif' ? 'Keşfet' : 'Akışın'}
+                </h1>
               </div>
               <div className="cc-feed-filters">
-                <span className={`cc-feed-filter ${isPersonalFeed ? 'active' : ''}`}>
-                  Takip Ettiklerinden
-                </span>
-                <span className={`cc-feed-filter ${!isPersonalFeed ? 'active' : ''}`}>
+                <a href="/?feed=takip" className={`cc-feed-filter ${feedFilter === 'takip' ? 'active' : ''}`}>
+                  Takip
+                </a>
+                <a href="/?feed=trend" className={`cc-feed-filter ${feedFilter === 'trend' ? 'active' : ''}`}>
+                  🔥 Trend
+                </a>
+                <a href="/?feed=kesif" className={`cc-feed-filter ${feedFilter === 'kesif' ? 'active' : ''}`}>
                   Keşfet
-                </span>
+                </a>
               </div>
             </div>
 
