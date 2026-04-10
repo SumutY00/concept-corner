@@ -10,8 +10,22 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const handleCallback = async () => {
-      // Supabase URL'deki token'ları otomatik yakalar
-      const { data: { session }, error } = await supabase.auth.getSession()
+      // URL'deki code parametresini al (PKCE flow)
+      const url = new URL(window.location.href)
+      const code = url.searchParams.get('code')
+
+      if (code) {
+        // Kodu session'a çevir
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (error) {
+          console.error('OAuth hata:', error)
+          router.push('/auth/login')
+          return
+        }
+      }
+
+      // Session'ı kontrol et
+      const { data: { session } } = await supabase.auth.getSession()
 
       if (session) {
         // Kullanıcının users tablosunda kaydı var mı kontrol et
@@ -47,7 +61,7 @@ export default function AuthCallbackPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#fafbfc',
+      background: 'var(--cc-bg)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -56,12 +70,12 @@ export default function AuthCallbackPage() {
       <div style={{ textAlign: 'center' }}>
         <div style={{
           width: 40, height: 40, borderRadius: '50%',
-          border: '3px solid #e2e4e9',
+          border: '3px solid var(--cc-border)',
           borderTopColor: '#667eea',
           animation: 'spin 0.8s linear infinite',
           margin: '0 auto 16px',
         }} />
-        <p style={{ color: '#8e8ea0', fontSize: 14 }}>Giriş yapılıyor...</p>
+        <p style={{ color: 'var(--cc-text-muted)', fontSize: 14 }}>Giriş yapılıyor...</p>
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
