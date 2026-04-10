@@ -1,57 +1,91 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export default function AuthCallbackPage() {
   const router = useRouter()
   const supabase = createClient()
+  const [status, setStatus] = useState('Giriş yapılıyor...')
 
   useEffect(() => {
     const handleCallback = async () => {
-      // URL'deki code parametresini al (PKCE flow)
-      const url = new URL(window.location.href)
-      const code = url.searchParams.get('code')
+      try {
+        // Hem hash hem code parametrelerini kontrol et
+        const hashParams = new URLSearchParams(window.location.hash.substring(1))
+        const urlParams = new URLSearchParams(window.location.search)
 
-      if (code) {
-        // Kodu session'a çevir
-        const { error } = await supabase.auth.exchangeCodeForSession(code)
-        if (error) {
-          console.error('OAuth hata:', error)
-          router.push('/auth/login')
-          return
-        }
-      }
+        const accessToken = hashParams.get('access_token')
+        const refreshToken = hashParams.get('refresh_token')
+        const code = urlParams.get('code')
 
-      // Session'ı kontrol et
-      const { data: { session } } = await supabase.auth.getSession()
-
-      if (session) {
-        // Kullanıcının users tablosunda kaydı var mı kontrol et
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('id')
-          .eq('id', session.user.id)
-          .single()
-
-        if (!existingUser) {
-          // Yeni kullanıcı — users tablosuna ekle
-          const email = session.user.email ?? ''
-          const username = email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '') + Math.floor(Math.random() * 1000)
-
-          await supabase.from('users').insert({
-            id: session.user.id,
-            email: email,
-            username: username,
-            avatar_url: session.user.user_metadata?.avatar_url ?? null,
+        if (accessToken && refreshToken) {
+          // Implicit flow — hash'ten token al
+          await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          })
+        } else if (code) {
+          // PKCE flow — code exchange
+          await supabase.auth.exchangeCodeForSession(code)
+        } else {
+          // Token yok, auth event dinle
+          await new Promise<void>((resolve) => {
+            const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+              if (event === 'SIGNED_IN') {
+                subscription.unsubscribe()
+                resolve()
+              }
+            })
+            // 5 saniye timeout
+            setTimeout(() => {
+              subscription.unsubscribe()
+              resolve()
+            }, 5000)
           })
         }
 
-        router.push('/')
-        router.refresh()
-      } else {
-        router.push('/auth/login')
+        // Session kontrol
+        const { data: { session } } = await supabase.auth.getSession()
+
+        if (session) {
+          setStatus('Hesap kontrol ediliyor...')
+
+          // Users tablosunda var mı?
+          const { data: existingUser } = await supabase
+            .from('users')
+            .select('id')
+            .eq('id', session.user.id)
+            .single()
+
+          if (!existingUser) {
+            setStatus('Hesap oluşturuluyor...')
+            const email = session.user.email ?? ''
+            const name = session.user.user_metadata?.full_name ?? ''
+            const username = (name || email.split('@')[0])
+              .replace(/[^a-zA-Z0-9]/g, '')
+              .toLowerCase() + Math.floor(Math.random() * 1000)
+
+            await supabase.from('users').insert({
+              id: session.user.id,
+              email: email,
+              username: username,
+              avatar_url: session.user.user_metadata?.avatar_url ?? null,
+              bio: null,
+            })
+          }
+
+          setStatus('Yönlendiriliyorsunuz...')
+          window.location.href = '/'
+        } else {
+          setStatus('Giriş başarısız, yönlendiriliyorsunuz...')
+          setTimeout(() => router.push('/auth/login'), 2000)
+        }
+      } catch (err) {
+        console.error('Callback hatası:', err)
+        setStatus('Bir hata oluştu, yönlendiriliyorsunuz...')
+        setTimeout(() => router.push('/auth/login'), 2000)
       }
     }
 
@@ -75,7 +109,7 @@ export default function AuthCallbackPage() {
           animation: 'spin 0.8s linear infinite',
           margin: '0 auto 16px',
         }} />
-        <p style={{ color: 'var(--cc-text-muted)', fontSize: 14 }}>Giriş yapılıyor...</p>
+        <p style={{ color: 'var(--cc-text-muted)', fontSize: 14 }}>{status}</p>
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
