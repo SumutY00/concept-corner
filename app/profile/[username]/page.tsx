@@ -6,6 +6,7 @@ import BlockButton from './BlockButton'
 import MessageButton from './MessageButton'
 import VideoCard from './VideoCard'
 import ProfileAvatar from './ProfileAvatar'
+import ProfileStats from './ProfileStats'
 
 async function getProfileData(username: string) {
   const cookieStore = await cookies()
@@ -276,20 +277,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
             <h1 className="cc-username">{profile.username}</h1>
             {profile.bio && <p className="cc-bio">{profile.bio}</p>}
 
-            <div className="cc-stats">
-              <div className="cc-stat">
-                <span className="cc-stat-num">{posts?.length ?? 0}</span>
-                <span className="cc-stat-label">Konsept</span>
-              </div>
-              <div className="cc-stat">
-                <span className="cc-stat-num">{followersCount ?? 0}</span>
-                <span className="cc-stat-label">Takipçi</span>
-              </div>
-              <div className="cc-stat">
-                <span className="cc-stat-num">{followingCount ?? 0}</span>
-                <span className="cc-stat-label">Takip</span>
-              </div>
-            </div>
+          <ProfileStats
+            userId={profile.id}
+            username={profile.username}
+            postCount={posts?.length ?? 0}
+            followersCount={followersCount ?? 0}
+            followingCount={followingCount ?? 0}
+          />
 
             {isOwnProfile && (
               <div className="cc-analytics">
