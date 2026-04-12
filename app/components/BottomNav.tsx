@@ -53,6 +53,25 @@ export default function BottomNav() {
     }
   }, [])
 
+  // Çevrimiçi durumu — kullanıcı varken 30sn'de bir güncelle
+  useEffect(() => {
+    if (!user) return
+    const supabaseClient = createClient()
+    const updatePresence = (online: boolean) =>
+      supabaseClient.rpc('update_user_presence', { p_is_online: online })
+
+    updatePresence(true)
+    const interval = setInterval(() => updatePresence(true), 30000)
+    const handleUnload = () => updatePresence(false)
+    window.addEventListener('beforeunload', handleUnload)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('beforeunload', handleUnload)
+      updatePresence(false)
+    }
+  }, [user])
+
   if (shouldHide || !user) return null
 
   const isActive = (path: string) => {

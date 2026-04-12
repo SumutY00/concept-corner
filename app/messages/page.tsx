@@ -4,12 +4,20 @@ import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 
+type OtherInfo = {
+  id: string
+  username: string
+  avatar_url: string | null
+  is_online: boolean
+  last_seen: string | null
+}
+
 type Conversation = {
   id: string
   participant_1: string
   participant_2: string
   last_message_at: string
-  other: { id: string; username: string; avatar_url: string | null }
+  other: OtherInfo
   lastMessage: string
   unreadCount: number
 }
@@ -47,7 +55,7 @@ export default function MessagesPage() {
 
       const { data: users } = await supabase
         .from('users')
-        .select('id, username, avatar_url')
+        .select('id, username, avatar_url, is_online, last_seen')
         .in('id', otherIds)
 
       const userMap: Record<string, any> = {}
@@ -73,7 +81,7 @@ export default function MessagesPage() {
 
           return {
             ...c,
-            other: userMap[otherId] ?? { id: otherId, username: 'Bilinmeyen', avatar_url: null },
+            other: userMap[otherId] ?? { id: otherId, username: 'Bilinmeyen', avatar_url: null, is_online: false, last_seen: null },
             lastMessage: lastMsgs?.[0]?.content ?? '',
             unreadCount: unread ?? 0,
           }
@@ -142,6 +150,18 @@ export default function MessagesPage() {
     return `${Math.floor(diff / 86400)}g`
   }
 
+  const lastSeenText = (dateStr: string | null | undefined): string => {
+    if (!dateStr) return ''
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const m = Math.floor(diff / 60000)
+    if (m < 1) return 'az önce'
+    if (m < 60) return `${m} dk önce`
+    const h = Math.floor(m / 60)
+    if (h < 24) return `${h} sa önce`
+    if (h < 48) return 'dün'
+    return `${Math.floor(h / 24)} gün önce`
+  }
+
   if (loading) return (
     <div style={{ minHeight: '100vh', background: 'var(--cc-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ width: 32, height: 32, borderRadius: '50%', border: '2px solid var(--cc-border)', borderTopColor: 'var(--cc-primary)', animation: 'spin 0.8s linear infinite' }} />
@@ -169,9 +189,9 @@ export default function MessagesPage() {
         .cc-new-btn {
           display: flex; align-items: center; gap: 6px;
           padding: 8px 16px; border-radius: var(--cc-radius-sm);
-          background: var(--cc-primary); border: none; cursor: pointer;
-          font-family: var(--cc-font-body); font-size: 13px; font-weight: 500;
-          color: #1a120a; transition: opacity 0.2s;
+          background: var(--cc-gradient); border: none; cursor: pointer;
+          font-family: var(--cc-font-body); font-size: 13px; font-weight: 600;
+          color: #fff; transition: opacity 0.2s;
         }
         .cc-new-btn:hover { opacity: 0.88; }
 
@@ -240,6 +260,22 @@ export default function MessagesPage() {
         }
         .cc-conv-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
+        /* Çevrimiçi nokta */
+        .cc-conv-avatar-wrap { position: relative; flex-shrink: 0; }
+        .cc-online-dot {
+          position: absolute; bottom: 1px; right: 1px;
+          width: 12px; height: 12px; border-radius: 50%;
+          background: #22C55E; border: 2px solid var(--cc-surface);
+          animation: onlinePulse 2.5s ease-in-out infinite;
+        }
+        @keyframes onlinePulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+          50% { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+        }
+
+        .cc-conv-last-seen { font-size: 11px; color: var(--cc-text-muted); margin-top: 1px; }
+        .cc-conv-online-text { font-size: 11px; color: #22C55E; font-weight: 500; margin-top: 1px; }
+
         .cc-conv-body { flex: 1; min-width: 0; }
         .cc-conv-name { font-size: 15px; font-weight: 500; color: var(--cc-text-primary); margin-bottom: 3px; }
         .cc-conv-preview { font-size: 13px; color: var(--cc-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -289,11 +325,14 @@ export default function MessagesPage() {
             <div className="cc-conv-list">
               {conversations.map(conv => (
                 <a key={conv.id} href={`/messages/${conv.id}`} className="cc-conv-item">
-                  <div className="cc-conv-avatar">
-                    {conv.other.avatar_url
-                      ? <img src={conv.other.avatar_url} alt="" />
-                      : conv.other.username?.[0]?.toUpperCase()
-                    }
+                  <div className="cc-conv-avatar-wrap">
+                    <div className="cc-conv-avatar">
+                      {conv.other.avatar_url
+                        ? <img src={conv.other.avatar_url} alt="" />
+                        : conv.other.username?.[0]?.toUpperCase()
+                      }
+                    </div>
+                    {conv.other.is_online && <div className="cc-online-dot" />}
                   </div>
                   <div className="cc-conv-body">
                     <p className="cc-conv-name">{conv.other.username}</p>
@@ -305,6 +344,12 @@ export default function MessagesPage() {
                         : 'Konuşma başladı'
                       }
                     </p>
+                    {conv.other.is_online
+                      ? <span className="cc-conv-online-text">çevrimiçi</span>
+                      : conv.other.last_seen
+                        ? <span className="cc-conv-last-seen">Son görülme: {lastSeenText(conv.other.last_seen)}</span>
+                        : null
+                    }
                   </div>
                   <div className="cc-conv-meta">
                     <span className="cc-conv-time">{timeAgo(conv.last_message_at)}</span>
