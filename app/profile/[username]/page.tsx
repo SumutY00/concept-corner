@@ -5,6 +5,7 @@ import FollowButton from './FollowButton'
 import BlockButton from './BlockButton'
 import MessageButton from './MessageButton'
 import VideoCard from './VideoCard'
+import ProfileAvatar from './ProfileAvatar'
 
 async function getProfileData(username: string) {
   const cookieStore = await cookies()
@@ -137,7 +138,15 @@ async function getProfileData(username: string) {
     }
   }
 
-  return { profile, posts, badges, bookmarkedPosts, followersCount, followingCount, isFollowing, isBlocked, initialRequestStatus, currentUser, totalLikes }
+  // Aktif hikayeler
+  const { data: profileStories } = await supabase
+    .from('stories')
+    .select('id, user_id, image_url, caption, created_at, expires_at')
+    .eq('user_id', profile.id)
+    .gt('expires_at', new Date().toISOString())
+    .order('created_at', { ascending: true })
+
+  return { profile, posts, badges, bookmarkedPosts, followersCount, followingCount, isFollowing, isBlocked, initialRequestStatus, currentUser, totalLikes, profileStories: profileStories ?? [] }
 }
 
 export default async function ProfilePage({ params }: { params: Promise<{ username: string }> }) {
@@ -145,7 +154,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
   const data = await getProfileData(username)
   if (!data) notFound()
 
-  const { profile, posts, badges, bookmarkedPosts, followersCount, followingCount, isFollowing, isBlocked, initialRequestStatus, currentUser, totalLikes } = data
+  const { profile, posts, badges, bookmarkedPosts, followersCount, followingCount, isFollowing, isBlocked, initialRequestStatus, currentUser, totalLikes, profileStories } = data
   const isOwnProfile = currentUser?.id === profile.id
   const isPrivate = profile.is_private ?? false
   const canViewPosts = isOwnProfile || !isPrivate || isFollowing
@@ -254,12 +263,14 @@ export default async function ProfilePage({ params }: { params: Promise<{ userna
 
         {/* Profil başlığı */}
         <div className="cc-profile-header">
-          <div className="cc-avatar">
-            {profile.avatar_url
-              ? <img src={profile.avatar_url} alt={profile.username} />
-              : profile.username?.[0]?.toUpperCase()
-            }
-          </div>
+          <ProfileAvatar
+            userId={profile.id}
+            username={profile.username}
+            avatarUrl={profile.avatar_url}
+            stories={profileStories}
+            currentUserId={currentUser?.id ?? null}
+            initials={profile.username?.[0]?.toUpperCase() ?? '?'}
+          />
 
           <div className="cc-profile-info">
             <h1 className="cc-username">{profile.username}</h1>

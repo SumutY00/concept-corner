@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import ThemeSwitcher from './components/ThemeSwitcher'
 import NotifBell from './components/NotifBell'
 import MsgBell from './components/MsgBell'
+import StoryBar from './components/StoryBar'
 import { redirect } from 'next/navigation'
 
 async function getHomeData(feedFilter: 'takip' | 'trend' | 'kesif') {
@@ -115,7 +116,59 @@ async function getHomeData(feedFilter: 'takip' | 'trend' | 'kesif') {
     suggestions = data ?? []
   }
 
-  return { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, categories, suggestions }
+  // ── HİKAYELER ── takip edilenler + kendi hikayem, süresi dolmamış
+  let storyUsers: any[] = []
+  if (user) {
+    const { data: myFollows2 } = await supabase
+      .from('follows').select('following_id').eq('follower_id', user.id)
+    const storyUserIds = (myFollows2?.map(f => f.following_id) ?? [])
+    storyUserIds.push(user.id) // kendim de dahil
+
+    // Aktif hikayeler
+    const { data: stories } = await supabase
+      .from('stories')
+      .select('*, users(id, username, avatar_url)')
+      .in('user_id', storyUserIds)
+      .gt('expires_at', new Date().toISOString())
+      .order('created_at', { ascending: true })
+
+    // Kendi görüntülemelerimi çek
+    const { data: myViews } = await supabase
+      .from('story_views')
+      .select('story_id')
+      .eq('viewer_id', user.id)
+    const viewedIds = new Set(myViews?.map(v => v.story_id) ?? [])
+
+    // Kullanıcı başına grupla
+    const userMap: Record<string, any> = {}
+    for (const s of stories ?? []) {
+      const uid = s.user_id
+      if (!userMap[uid]) {
+        userMap[uid] = {
+          id: uid,
+          username: s.users?.username ?? '',
+          avatar_url: s.users?.avatar_url ?? null,
+          stories: [],
+          hasUnseen: false,
+        }
+      }
+      userMap[uid].stories.push({
+        id: s.id, user_id: s.user_id, image_url: s.image_url,
+        caption: s.caption, created_at: s.created_at, expires_at: s.expires_at,
+      })
+      if (!viewedIds.has(s.id)) userMap[uid].hasUnseen = true
+    }
+
+    // Kendi hikayem en başa, diğerleri hasUnseen önce
+    const myEntry = userMap[user.id]
+    const others = Object.values(userMap)
+      .filter((u: any) => u.id !== user.id)
+      .sort((a: any, b: any) => (b.hasUnseen ? 1 : 0) - (a.hasUnseen ? 1 : 0))
+
+    storyUsers = myEntry ? [myEntry, ...others] : others
+  }
+
+  return { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, categories, suggestions, storyUsers }
 }
 
 function getDaysLeft(endDate: string) {
@@ -144,7 +197,7 @@ export default async function Home({
 }) {
   const params = await searchParams
   const feedFilter = (params?.feed === 'trend' ? 'trend' : params?.feed === 'kesif' ? 'kesif' : 'takip') as 'takip' | 'trend' | 'kesif'
-  const { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, categories, suggestions } = await getHomeData(feedFilter)
+  const { feedPosts, activeConcept, conceptPosts, user, currentUserProfile, categories, suggestions, storyUsers } = await getHomeData(feedFilter)
   const daysLeft = activeConcept ? getDaysLeft(activeConcept.end_date) : 0
 
   return (
@@ -693,6 +746,17 @@ export default async function Home({
         {/* ── MAIN LAYOUT ── */}
         <div className="cc-layout">
           <main>
+            {/* ── HİKAYE BARI ── */}
+            {storyUsers.length > 0 || user ? (
+              <StoryBar
+                storyUsers={storyUsers}
+                currentUserId={user!.id}
+                currentUsername={currentUserProfile?.username ?? ''}
+                currentAvatarUrl={currentUserProfile?.avatar_url ?? null}
+                hasOwnStory={storyUsers.some((u: any) => u.id === user!.id)}
+              />
+            ) : null}
+
             {/* Feed Header */}
             <div className="cc-feed-header">
               <div className="cc-feed-left">
